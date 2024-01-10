@@ -142,30 +142,31 @@ class _Onboarding2State extends State<Onboarding2> {
                   ],
                 ),
               ),
-              Container(
-                // group249Bs (5:20)
-                margin:
-                    EdgeInsets.fromLTRB(105 * fem, 0 * fem, 105 * fem, 0 * fem),
-                width: double.infinity,
-                height: 50 * fem,
-                decoration: BoxDecoration(
-                  color: Color(0xffba68c8),
-                  borderRadius: BorderRadius.circular(60 * fem),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0x3f000000),
-                      offset: Offset(0 * fem, 6 * fem),
-                      blurRadius: 3 * fem,
-                    ),
-                  ],
-                ),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Onboarding3()),
-                    );
-                  },
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Onboarding3()),
+                  );
+                },
+                child: Container(
+                  // group249Bs (5:20)
+                  margin: EdgeInsets.fromLTRB(
+                      105 * fem, 0 * fem, 105 * fem, 0 * fem),
+                  width: double.infinity,
+                  height: 50 * fem,
+                  decoration: BoxDecoration(
+                    color: Color(0xffba68c8),
+                    borderRadius: BorderRadius.circular(60 * fem),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x3f000000),
+                        offset: Offset(0 * fem, 6 * fem),
+                        blurRadius: 3 * fem,
+                      ),
+                    ],
+                  ),
+
                   child: Center(
                     child: RichText(
                       text: TextSpan(

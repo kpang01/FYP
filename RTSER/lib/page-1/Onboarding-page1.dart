@@ -113,30 +113,31 @@ class _OnBoarding1State extends State<OnBoarding1> {
                     ],
                   ),
                 ),
-                Container(
-                  // group24ycy (1:221)
-                  margin: EdgeInsets.fromLTRB(
-                      105 * fem, 0 * fem, 105 * fem, 0 * fem),
-                  width: double.infinity,
-                  height: 50 * fem,
-                  decoration: BoxDecoration(
-                    color: Color(0xff92e3a9),
-                    borderRadius: BorderRadius.circular(60 * fem),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0x3f000000),
-                        offset: Offset(0 * fem, 6 * fem),
-                        blurRadius: 3 * fem,
-                      ),
-                    ],
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Onboarding2()),
-                      );
-                    },
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Onboarding2()),
+                    );
+                  },
+                  child: Container(
+                    // group24ycy (1:221)
+                    margin: EdgeInsets.fromLTRB(
+                        105 * fem, 0 * fem, 105 * fem, 0 * fem),
+                    width: double.infinity,
+                    height: 50 * fem,
+                    decoration: BoxDecoration(
+                      color: Color(0xff92e3a9),
+                      borderRadius: BorderRadius.circular(60 * fem),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0x3f000000),
+                          offset: Offset(0 * fem, 6 * fem),
+                          blurRadius: 3 * fem,
+                        ),
+                      ],
+                    ),
+
                     child: Center(
                       child: RichText(
                         text: TextSpan(

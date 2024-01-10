@@ -251,7 +251,9 @@ class _registrationPageState extends State<registrationPage>
                                     return null;
                                   },
                                   onChanged: (value) {
-                                    //Do something when selected item is changed.
+                                    setState(() {
+                                      _genderController.text = value.toString();
+                                    });
                                   },
                                   onSaved: (value) {
                                     _genderController.text = value.toString();
@@ -343,7 +345,9 @@ class _registrationPageState extends State<registrationPage>
                                     return null;
                                   },
                                   onChanged: (value) {
-                                    //Do something when selected item is changed.
+                                    setState(() {
+                                      _raceController.text = value.toString();
+                                    });
                                   },
                                   onSaved: (value) {
                                     _raceController.text = value.toString();
@@ -473,28 +477,28 @@ class _registrationPageState extends State<registrationPage>
                         SizedBox(
                           height: 50,
                         ),
-                        Container(
-                          // autogroupyhekR57 (NshaKGUhWqnzCwkUwsyheK)
-                          margin: EdgeInsets.fromLTRB(
-                              2 * fem, 0 * fem, 0 * fem, 6 * fem),
-                          width: 300 * fem,
-                          height: 50 * fem,
-                          decoration: BoxDecoration(
-                            color: Color(0xff407bff),
-                            borderRadius: BorderRadius.circular(10 * fem),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x3f000000),
-                                offset: Offset(0 * fem, 4 * fem),
-                                blurRadius: 2 * fem,
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: GestureDetector(
-                              onTap: () async {
-                                createUser();
-                              },
+                        GestureDetector(
+                          onTap: () async {
+                            createUser();
+                          },
+                          child: Container(
+                            // autogroupyhekR57 (NshaKGUhWqnzCwkUwsyheK)
+                            margin: EdgeInsets.fromLTRB(
+                                2 * fem, 0 * fem, 0 * fem, 6 * fem),
+                            width: 300 * fem,
+                            height: 50 * fem,
+                            decoration: BoxDecoration(
+                              color: Color(0xff407bff),
+                              borderRadius: BorderRadius.circular(10 * fem),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0x3f000000),
+                                  offset: Offset(0 * fem, 4 * fem),
+                                  blurRadius: 2 * fem,
+                                ),
+                              ],
+                            ),
+                            child: Center(
                               child: Text(
                                 'Sign up',
                                 style: SafeGoogleFont(
@@ -649,5 +653,11 @@ class _registrationPageState extends State<registrationPage>
 
     // Set the user data in the database
     userRef.set(userData);
+    try {
+      userRef.set(userData);
+      print('Data uploaded successfully');
+    } catch (e) {
+      print('Error uploading data: $e');
+    }
   }
 }

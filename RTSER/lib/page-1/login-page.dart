@@ -439,7 +439,10 @@ class _LoginPageState extends State<loginPage>
       });
 
       // You can add further logic or navigate to a new screen here
-      MaterialPageRoute(builder: (context) => mainPage());
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => mainPage()),
+      );
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

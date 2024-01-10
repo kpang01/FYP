@@ -106,30 +106,31 @@ class _Onboarding3State extends State<Onboarding3> {
                 ],
               ),
             ),
-            Container(
-              // group24Mpy (5:182)
-              margin:
-                  EdgeInsets.fromLTRB(105 * fem, 0 * fem, 105 * fem, 0 * fem),
-              width: double.infinity,
-              height: 50 * fem,
-              decoration: BoxDecoration(
-                color: Color(0xff407bff),
-                borderRadius: BorderRadius.circular(60 * fem),
-                boxShadow: [
-                  BoxShadow(
-                    color: Color(0x3f000000),
-                    offset: Offset(0 * fem, 6 * fem),
-                    blurRadius: 3 * fem,
-                  ),
-                ],
-              ),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => loginPage()),
-                  );
-                },
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => loginPage()),
+                );
+              },
+              child: Container(
+                // group24Mpy (5:182)
+                margin:
+                    EdgeInsets.fromLTRB(105 * fem, 0 * fem, 105 * fem, 0 * fem),
+                width: double.infinity,
+                height: 50 * fem,
+                decoration: BoxDecoration(
+                  color: Color(0xff407bff),
+                  borderRadius: BorderRadius.circular(60 * fem),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0x3f000000),
+                      offset: Offset(0 * fem, 6 * fem),
+                      blurRadius: 3 * fem,
+                    ),
+                  ],
+                ),
+
                 child: Center(
                   child: RichText(
                     text: TextSpan(
