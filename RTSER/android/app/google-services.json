@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "49698887781",
+    "project_id": "rtser-5bd24",
+    "storage_bucket": "rtser-5bd24.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:49698887781:android:17d9221dc0536fb0c80e8c",
+        "android_client_info": {
+          "package_name": "com.example.test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4fkkUx_fkBMPuKImox0ffsRO-UBWXBEw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

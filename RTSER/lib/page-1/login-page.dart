@@ -1,11 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
 
+//import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:rtser/Server/Myconfig.dart';
-import 'package:rtser/Server/User.dart';
 
+//import 'package:http/http.dart' as http;
+//import 'package:rtser/Server/Myconfig.dart';
+//import 'package:rtser/Server/User.dart';
+import 'main-page.dart';
 import 'registration-page.dart';
 
 class loginPage extends StatefulWidget {
@@ -80,10 +82,11 @@ class _LoginPageState extends State<loginPage>
     }
   }*/
 
-  // Email validation regex
+  //Email validation regex
   final RegExp emailRegex = RegExp(
     r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$',
   );
+
   bool _passwordVisible = false;
 
   @override
@@ -236,7 +239,7 @@ class _LoginPageState extends State<loginPage>
                       ),
                       GestureDetector(
                         onTap: () async {
-                          onLogin();
+                          await onLogin();
                         },
                         child: Container(
                           // autogrouplgefaus (NshYkp5RLVfdrbBANyLGEF)
@@ -326,7 +329,7 @@ class _LoginPageState extends State<loginPage>
     );
   }
 
-  void onLogin() {
+/*  void onLogin() {
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Check your input")));
@@ -386,6 +389,61 @@ class _LoginPageState extends State<loginPage>
       });
     } on TimeoutException catch (_) {
       print("Time out");
+    }
+  }
+}
+*/
+  Future<void> onLogin() async {
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Check your input")));
+      return;
+    }
+
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Successfully logged in
+      print('User ID: ${userCredential.user!.uid}');
+      print('Email: ${userCredential.user!.email}');
+
+      // You can add further logic or navigate to a new screen here
+      MaterialPageRoute(builder: (context) => mainPage());
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: const Text("Login Success"),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      print('Failed with error code: ${e.code}');
+      print('Error message: ${e.message}');
+
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Login Failed'),
+            content: Text(e.message ?? 'Unknown error'),
+            actions: [
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 }
