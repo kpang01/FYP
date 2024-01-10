@@ -1,9 +1,7 @@
-import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:rtser/Server/Myconfig.dart';
 import 'package:rtser/utils.dart';
 
 class registrationPage extends StatefulWidget {
@@ -13,6 +11,7 @@ class registrationPage extends StatefulWidget {
 
 class _registrationPageState extends State<registrationPage>
     with SingleTickerProviderStateMixin {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _nicknameController = TextEditingController();
@@ -48,6 +47,7 @@ class _registrationPageState extends State<registrationPage>
     double fem = MediaQuery.of(context).size.width / baseWidth;
     double ffem = fem * 0.97;
     return Scaffold(
+      key: _scaffoldKey,
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
@@ -493,7 +493,7 @@ class _registrationPageState extends State<registrationPage>
                           child: Center(
                             child: GestureDetector(
                               onTap: () async {
-                                onRegisterDialog();
+                                createUser();
                               },
                               child: Text(
                                 'Sign up',
@@ -557,48 +557,72 @@ class _registrationPageState extends State<registrationPage>
     );
   }
 
-  void onRegisterDialog() {
+  void createUser() async {
     if (!_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Check your input")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Check your input")),
+      );
       return;
     }
 
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
     if (password != confirmPassword) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Check your password")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Check your password")),
+      );
       return;
     }
 
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (dialogContex) {
         return AlertDialog(
           shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
-          title: const Text(
-            "Register new account?",
-            style: TextStyle(),
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
           ),
+          title: const Text("Register new account?", style: TextStyle()),
           content: const Text("Are you sure?", style: TextStyle()),
           actions: <Widget>[
             TextButton(
-              child: const Text(
-                "Yes",
-                style: TextStyle(),
-              ),
-              onPressed: () {
+              child: const Text("Yes", style: TextStyle()),
+              onPressed: () async {
                 Navigator.of(context).pop();
-                createUser();
+                try {
+                  UserCredential userCredential = await FirebaseAuth.instance
+                      .createUserWithEmailAndPassword(
+                    email: _emailController.text,
+                    password: _passwordController.text,
+                  );
+
+                  // Store additional user data in Firebase Realtime Database
+                  storeUserData(userCredential.user!.uid);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Registration Success")),
+                  );
+
+                  // Navigate back to login page
+                  Navigator.pop(context);
+                } on FirebaseAuthException catch (e) {
+                  if (e.code == 'weak-password') {
+                    print('The password provided is too weak.');
+                  } else if (e.code == 'email-already-in-use') {
+                    print('The account already exists for that email.');
+                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Registration Failed")),
+                  );
+                } catch (e) {
+                  print(e);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Registration Failed")),
+                  );
+                }
               },
             ),
             TextButton(
-              child: const Text(
-                "No",
-                style: TextStyle(),
-              ),
+              child: const Text("No", style: TextStyle()),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -609,41 +633,21 @@ class _registrationPageState extends State<registrationPage>
     );
   }
 
-  void createUser() {
-    String name = _nameController.text;
-    String nickname = _nicknameController.text;
-    String age = _ageController.text;
-    String gender = _genderController.text;
-    String race = _raceController.text;
-    String email = _emailController.text;
-    String password = _passwordController.text;
+  void storeUserData(String userId) {
+    DatabaseReference userRef =
+        FirebaseDatabase.instance.ref('users').child(userId);
 
-    http.post(Uri.parse("${MyConfig().SERVER}/rtser/php/register_user.php"),
-        body: {
-          "name": name,
-          "nickname": nickname,
-          "age": age,
-          "gender": gender,
-          "race": race,
-          "email": email,
-          "password": password,
-        }).then((response) {
-      // print(response.body);
-      if (response.statusCode == 200) {
-        var jsondata = jsonDecode(response.body);
-        if (jsondata['status'] == 'success') {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Registration Success")));
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Registration Failed")));
-        }
-        Navigator.pop(context);
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("Registration Failed")));
-        Navigator.pop(context);
-      }
-    });
+    // Create a map of user data to be stored in the database
+    Map<String, dynamic> userData = {
+      'name': _nameController.text,
+      'nickname': _nicknameController.text,
+      'age': _ageController.text,
+      'gender': _genderController.text,
+      'race': _raceController.text,
+      'email': _emailController.text,
+    };
+
+    // Set the user data in the database
+    userRef.set(userData);
   }
 }

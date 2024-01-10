@@ -2,6 +2,7 @@ import 'dart:async';
 
 //import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 //import 'package:http/http.dart' as http;
@@ -393,6 +394,7 @@ class _LoginPageState extends State<loginPage>
   }
 }
 */
+
   Future<void> onLogin() async {
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context)
@@ -413,6 +415,28 @@ class _LoginPageState extends State<loginPage>
       // Successfully logged in
       print('User ID: ${userCredential.user!.uid}');
       print('Email: ${userCredential.user!.email}');
+
+      // Fetch user data from Firebase Realtime Database
+      DatabaseReference userRef = FirebaseDatabase.instance
+          .reference()
+          .child('users')
+          .child(userCredential.user!.uid);
+
+      userRef.once().then((DatabaseEvent event) {
+        // Access DataSnapshot from the event
+        DataSnapshot snapshot = event.snapshot;
+
+        if (snapshot.value != null) {
+          dynamic userData = snapshot.value;
+
+          // Use null-aware operators to access properties safely
+          String userName = userData['name'] as String? ?? 'N/A';
+          String userAge = userData['age'] as String? ?? 'N/A';
+
+          print('User Name: $userName');
+          print('User Age: $userAge');
+        }
+      });
 
       // You can add further logic or navigate to a new screen here
       MaterialPageRoute(builder: (context) => mainPage());
