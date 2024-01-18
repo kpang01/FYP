@@ -4,11 +4,9 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:rtser/page-1/record.dart';
 
-//import 'package:http/http.dart' as http;
-//import 'package:rtser/Server/Myconfig.dart';
-//import 'package:rtser/Server/User.dart';
-import 'main-page.dart';
+//import 'main-page.dart';
 import 'registration-page.dart';
 
 class loginPage extends StatefulWidget {
@@ -441,7 +439,7 @@ class _LoginPageState extends State<loginPage>
       // You can add further logic or navigate to a new screen here
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => mainPage()),
+        MaterialPageRoute(builder: (context) => Record()),
       );
 
       ScaffoldMessenger.of(context).showSnackBar(

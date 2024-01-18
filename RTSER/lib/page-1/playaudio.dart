@@ -1,7 +1,74 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rtser/utils.dart';
 
-class Scene extends StatelessWidget {
+class PlayAudio extends StatefulWidget {
+  @override
+  State<PlayAudio> createState() => _PlayAudioState();
+}
+
+class _PlayAudioState extends State<PlayAudio> {
+  late File file;
+  late PlayerController controller;
+  late StreamSubscription<PlayerState> playerStateSubscription;
+  double? width;
+  late Directory appDirectory;
+
+  final playerWaveStyle = const PlayerWaveStyle(
+    fixedWaveColor: Colors.white54,
+    liveWaveColor: Colors.white,
+    spacing: 6,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    controller = PlayerController();
+    _preparePlayer();
+    playerStateSubscription = controller.onPlayerStateChanged.listen((_) {
+      setState(() {});
+    });
+  }
+
+  void _preparePlayer() async {
+    appDirectory = await getApplicationDocumentsDirectory();
+
+    // Use Firebase Storage to get the audio file
+    firebase_storage.Reference storageRef = firebase_storage
+        .FirebaseStorage.instance
+        .ref('your_storage_path/temp_audio.m4a');
+
+    // Download the temporary audio file
+    firebase_storage.TaskSnapshot task = await storageRef
+        .writeToFile(File('${appDirectory.path}/temp_audio.m4a'));
+
+    // Prepare player with extracting waveform
+    controller.preparePlayer(
+      path: '${appDirectory.path}/temp_audio.m4a',
+      shouldExtractWaveform: true,
+    );
+
+    // Extracting waveform
+    controller
+        .extractWaveformData(
+          path: '${appDirectory.path}/temp_audio.m4a',
+          noOfSamples: playerWaveStyle.getSamplesForWidth(width ?? 200),
+        )
+        .then((waveformData) => debugPrint(waveformData.toString()));
+  }
+
+  @override
+  void dispose() {
+    playerStateSubscription.cancel();
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 360;
@@ -15,6 +82,7 @@ class Scene extends StatelessWidget {
         decoration: BoxDecoration(
           color: Color(0xff06030b),
         ),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -104,12 +172,39 @@ class Scene extends StatelessWidget {
                           top: 199 * fem,
                           child: Align(
                             child: SizedBox(
-                              width: 281 * fem,
-                              height: 96 * fem,
-                              child: Image.asset(
-                                'assets/page-1/images/https-lottiefilescom-animations-wave-oaehkloshx.png',
-                              ),
-                            ),
+                                width: 281 * fem,
+                                height: 96 * fem,
+                                child: Row(
+                                  children: [
+                                    if (!controller.playerState.isStopped)
+                                      IconButton(
+                                        onPressed: () async {
+                                          controller.playerState.isPlaying
+                                              ? await controller.pausePlayer()
+                                              : await controller.startPlayer(
+                                                  finishMode: FinishMode.loop,
+                                                );
+                                        },
+                                        icon: Icon(
+                                          controller.playerState.isPlaying
+                                              ? Icons.stop
+                                              : Icons.play_arrow,
+                                        ),
+                                        color: Colors.white,
+                                        splashColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                      ),
+                                    AudioFileWaveforms(
+                                      size: Size(
+                                          MediaQuery.of(context).size.width / 2,
+                                          70),
+                                      playerController: controller,
+                                      waveformType: WaveformType
+                                          .long, // or any default value you want
+                                      playerWaveStyle: playerWaveStyle,
+                                    ),
+                                  ],
+                                )),
                           ),
                         ),
                       ],
