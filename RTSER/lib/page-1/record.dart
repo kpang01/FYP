@@ -9,6 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rtser/page-1/playaudio.dart';
 
+import 'history.dart';
+import 'main-page.dart';
+import 'profile.dart';
+
 class Record extends StatefulWidget {
   @override
   State<Record> createState() => _RecordState();
@@ -25,6 +29,7 @@ class _RecordState extends State<Record> {
   bool isRecordingCompleted = false;
   bool isLoading = true;
   late Directory appDirectory;
+  int _currentIndex = 1;
 
   @override
   void initState() {
@@ -71,151 +76,213 @@ class _RecordState extends State<Record> {
     double baseWidth = 360;
     double fem = MediaQuery.of(context).size.width / baseWidth;
     double ffem = fem * 0.97;
-    return Container(
-      width: double.infinity,
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Color(0xff06030b),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              padding:
-                  EdgeInsets.fromLTRB(17 * fem, 41 * fem, 14 * fem, 35 * fem),
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    margin:
-                        EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 3 * fem),
-                    width: double.infinity,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.fromLTRB(
-                              0 * fem, 0 * fem, 121.12 * fem, 0.68 * fem),
-                          width: 21.88 * fem,
-                          height: 21.32 * fem,
-                          child: Image.asset(
-                            'assets/page-1/images/vector-jWm.png',
-                            width: 21.88 * fem,
-                            height: 21.32 * fem,
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.fromLTRB(
-                              0 * fem, 0 * fem, 107 * fem, 1 * fem),
-                          child: RichText(
-                            text: TextSpan(
-                              text: 'SER',
-                              style: TextStyle(
-                                fontSize: 20 * ffem,
-                                fontWeight: FontWeight.w800,
-                                color: Color(0xffffffff),
+    return Scaffold(
+        backgroundColor: Color(0xff06030b),
+        body: Padding(
+          padding: EdgeInsets.fromLTRB(17 * fem, 41 * fem, 14 * fem, 35 * fem),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.fromLTRB(
+                          0 * fem, 0 * fem, 0 * fem, 3 * fem),
+                      width: double.infinity,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pop(); // This will navigate back
+                            },
+                            child: Container(
+                              margin: EdgeInsets.fromLTRB(
+                                  0 * fem, 0 * fem, 121.12 * fem, 0.68 * fem),
+                              width: 21.88 * fem,
+                              height: 21.32 * fem,
+                              child: Icon(
+                                Icons.arrow_back,
+                                size: 30 * fem,
+                                color: Colors.blueAccent,
                               ),
                             ),
                           ),
-                        ),
-                        Container(
-                          width: 40 * fem,
-                          height: 40 * fem,
-                          child: Image.asset(
-                            'assets/page-1/images/vector-Gx5.png',
+                          Container(
+                            margin: EdgeInsets.fromLTRB(
+                                0 * fem, 0 * fem, 107 * fem, 1 * fem),
+                            child: RichText(
+                              text: TextSpan(
+                                text: 'SER',
+                                style: TextStyle(
+                                  fontSize: 20 * ffem,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.blueAccent,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            // frame31HJD (1:1396)
                             width: 40 * fem,
                             height: 40 * fem,
+                            child: Icon(
+                              Icons.account_circle,
+                              size: 40 * fem,
+                              color:
+                                  Colors.white, // Customize the color if needed
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 150,
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      _startOrStopRecording();
-                    },
-                    child: AvatarGlow(
-                      startDelay: const Duration(milliseconds: 1000),
-                      repeat: isRecording,
-                      glowColor: Colors.white,
-                      glowShape: BoxShape.circle,
-                      curve: Curves.fastOutSlowIn,
-                      child: const Material(
-                        elevation: 8.0,
-                        shape: CircleBorder(),
-                        color: Colors.transparent,
-                        child: CircleAvatar(
-                          backgroundImage:
-                              AssetImage('assets/page-1/images/mic.png'),
-                          radius: 80.0,
+                    SizedBox(
+                      height: 150,
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        _startOrStopRecording();
+                      },
+                      child: AvatarGlow(
+                        startDelay: const Duration(milliseconds: 1000),
+                        repeat: isRecording,
+                        glowColor: Colors.white,
+                        glowShape: BoxShape.circle,
+                        curve: Curves.fastOutSlowIn,
+                        child: const Material(
+                          elevation: 8.0,
+                          shape: CircleBorder(),
+                          color: Colors.transparent,
+                          child: CircleAvatar(
+                            backgroundImage:
+                                AssetImage('assets/page-1/images/mic.png'),
+                            radius: 80.0,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 100,
-                  ),
-                  RichText(
-                    text: TextSpan(
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 30,
+                    SizedBox(
+                      height: 100,
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                        ),
+                        children: [
+                          TextSpan(
+                            text:
+                                '${recordingDuration.inHours.toString().padLeft(2, '0')}:',
+                          ),
+                          TextSpan(
+                            text:
+                                '${(recordingDuration.inMinutes % 60).toString().padLeft(2, '0')}:',
+                          ),
+                          TextSpan(
+                            text:
+                                '${(recordingDuration.inSeconds % 60).toString().padLeft(2, '0')}',
+                          ),
+                        ],
                       ),
-                      children: [
-                        TextSpan(
-                          text:
-                              '${recordingDuration.inHours.toString().padLeft(2, '0')}:',
-                        ),
-                        TextSpan(
-                          text:
-                              '${(recordingDuration.inMinutes % 60).toString().padLeft(2, '0')}:',
-                        ),
-                        TextSpan(
-                          text:
-                              '${(recordingDuration.inSeconds % 60).toString().padLeft(2, '0')}',
-                        ),
-                      ],
                     ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  SafeArea(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        AudioWaveforms(
-                          enableGesture: true,
-                          size: Size(
-                              MediaQuery.of(context).size.width - 100, 100),
-                          recorderController: recorderController,
-                          waveStyle: const WaveStyle(
-                            waveColor: Colors.blue,
-                            extendWaveform: true,
-                            showMiddleLine: false,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4.0),
-                            color: const Color(0xff06030b),
-                          ),
-                          padding: const EdgeInsets.only(left: 18),
-                          margin: const EdgeInsets.symmetric(horizontal: 15),
-                        )
-                      ],
+                    SizedBox(
+                      height: 10,
                     ),
-                  ),
-                ],
+                    SafeArea(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AudioWaveforms(
+                            enableGesture: true,
+                            size: Size(
+                                MediaQuery.of(context).size.width - 100, 100),
+                            recorderController: recorderController,
+                            waveStyle: const WaveStyle(
+                              waveColor: Colors.blue,
+                              extendWaveform: true,
+                              showMiddleLine: false,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4.0),
+                              color: const Color(0xff06030b),
+                            ),
+                            padding: const EdgeInsets.only(left: 18),
+                            margin: const EdgeInsets.symmetric(horizontal: 15),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(color: Colors.grey, width: 0.1), // Add top border
+            ),
+          ),
+          child: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+              switch (index) {
+                case 0:
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => mainPage()));
+                  break;
+                case 1:
+                  break;
+                case 2:
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HistoryPage()));
+                  break;
+                case 3:
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ProfilePage()));
+                  break;
+              }
+            },
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.mic),
+                label: 'SER',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.history),
+                label: 'History',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'Profile',
+              ),
+            ],
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: Colors.blue,
+            unselectedItemColor: Colors.grey,
+            selectedLabelStyle: TextStyle(color: Colors.blue),
+            unselectedLabelStyle: TextStyle(color: Colors.grey),
+            backgroundColor: Colors.white,
+            elevation: 5, // Set the elevation to control the shadow
+            showSelectedLabels: true, // Show labels for selected items
+            showUnselectedLabels: true, // Show labels for unselected items
+            selectedFontSize: 14, // Set the font size for selected labels
+            unselectedFontSize: 14, // Set the font size for unselected labels
+          ),
+        ));
   }
 
   void _startOrStopRecording() async {

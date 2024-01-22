@@ -1,712 +1,580 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:rtser/page-1/login-page.dart';
+import 'package:rtser/page-1/main-page.dart';
 import 'package:rtser/utils.dart';
 
-class Scene extends StatelessWidget {
+import 'history.dart';
+import 'record.dart';
+
+class ProfilePage extends StatefulWidget {
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _nicknameController = TextEditingController();
+  final _ageController = TextEditingController();
+  final _genderController = TextEditingController();
+  final _raceController = TextEditingController();
+  final _emailController = TextEditingController();
+  int _currentIndex = 3;
+
+  final List<String> genderItems = [
+    'Male',
+    'Female',
+  ];
+
+  final List<String> raceItems = [
+    'Malay',
+    'Chinese',
+    'India',
+    'Bumiputera',
+    'Others',
+  ];
+
+  final RegExp emailRegex = RegExp(
+    r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$',
+  );
+  bool isEditMode = true;
   @override
   Widget build(BuildContext context) {
     double baseWidth = 360;
     double fem = MediaQuery.of(context).size.width / baseWidth;
     double ffem = fem * 0.97;
-    return Container(
-      width: double.infinity,
-      child: Container(
-        // profilemrV (8:11)
-        width: double.infinity,
-        height: 800 * fem,
-        decoration: BoxDecoration(
-          color: Color(0xffffffff),
-          borderRadius: BorderRadius.circular(40 * fem),
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              // autogroupt4rrHZw (NshmjXHYoRPgjWg678T4RR)
-              left: 0 * fem,
-              top: 0 * fem,
-              child: Container(
-                width: 600 * fem,
-                height: 655 * fem,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      // group23Pcy (8:12)
-                      left: 30 * fem,
-                      top: 17.3305664062 * fem,
-                      child: Align(
-                        child: SizedBox(
-                          width: 307 * fem,
-                          height: 12.76 * fem,
-                          child: Image.asset(
-                            'assets/page-1/images/group-23.png',
-                            width: 307 * fem,
-                            height: 12.76 * fem,
+    return Scaffold(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+            child: Column(children: [
+          Container(
+            width: 600 * fem,
+            height: 260 * fem,
+            child: Stack(children: [
+              Positioned(
+                // ellipse7gMB (8:26)
+                left: 0 * fem,
+                top: 0 * fem,
+                child: Align(
+                  child: SizedBox(
+                    width: 360 * fem,
+                    height: 200 * fem,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(0 * fem),
+                        color: Colors.white,
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage(
+                            'assets/page-1/images/Ellipse-7.png',
                           ),
                         ),
                       ),
                     ),
-                    Positioned(
-                      // ellipse7gMB (8:26)
-                      left: 0 * fem,
-                      top: 0 * fem,
-                      child: Align(
-                        child: SizedBox(
-                          width: 600 * fem,
-                          height: 600 * fem,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(300 * fem),
-                              color: Color(0xff407bff),
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage(
-                                  'assets/page-1/images/ellipse-7-bg.png',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      // ellipse26mdX (8:27)
-                      left: 125 * fem,
-                      top: 137 * fem,
-                      child: Align(
-                        child: SizedBox(
-                          width: 110 * fem,
-                          height: 110 * fem,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(55 * fem),
-                              border: Border.all(color: Color(0xff000000)),
-                              color: Color(0xff000000),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      // vectorH65 (8:28)
-                      left: 130 * fem,
-                      top: 142 * fem,
-                      child: Align(
-                        child: SizedBox(
-                          width: 100 * fem,
-                          height: 100 * fem,
-                          child: Image.asset(
-                            'assets/page-1/images/vector-dD7.png',
-                            width: 100 * fem,
-                            height: 100 * fem,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      // ellipse10QAh (8:29)
-                      left: 195 * fem,
-                      top: 207 * fem,
-                      child: Align(
-                        child: SizedBox(
-                          width: 40 * fem,
-                          height: 40 * fem,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20 * fem),
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage(
-                                  'assets/page-1/images/ellipse-10-bg.png',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      // image10HkH (8:49)
-                      left: 308 * fem,
-                      top: 30 * fem,
-                      child: Align(
-                        child: SizedBox(
-                          width: 30 * fem,
-                          height: 30 * fem,
-                          child: Image.asset(
-                            'assets/page-1/images/image-10.png',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-            Positioned(
-              // autogroup3mqxCcM (Nshmubq68wqHXU44oy3MQX)
-              left: 0 * fem,
-              top: 247 * fem,
-              child: Container(
-                padding:
-                    EdgeInsets.fromLTRB(12 * fem, 42 * fem, 18 * fem, 73 * fem),
-                width: 360 * fem,
-                height: 553 * fem,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      // frame246Bw (8:30)
-                      margin: EdgeInsets.fromLTRB(
-                          0 * fem, 0 * fem, 0 * fem, 8 * fem),
-                      padding: EdgeInsets.fromLTRB(
-                          13 * fem, 37 * fem, 13 * fem, 104 * fem),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Color(0xffe8e5e5),
-                        borderRadius: BorderRadius.circular(40 * fem),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            // group12aN1 (8:31)
-                            width: 51 * fem,
-                            height: 39 * fem,
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  // nameX2M (8:32)
-                                  left: 0 * fem,
-                                  top: 0 * fem,
-                                  child: Align(
-                                    child: SizedBox(
-                                      width: 51 * fem,
-                                      height: 20 * fem,
-                                      child: Text(
-                                        'Name:',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 16 * ffem,
-                                          fontWeight: FontWeight.w800,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff000000),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  // namebY1 (8:33)
-                                  left: 2 * fem,
-                                  top: 19 * fem,
-                                  child: Align(
-                                    child: SizedBox(
-                                      width: 42 * fem,
-                                      height: 20 * fem,
-                                      child: Text(
-                                        'name',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 16 * ffem,
-                                          fontWeight: FontWeight.w400,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff727272),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 1 * fem,
-                          ),
-                          Container(
-                            // group13g3f (8:34)
-                            width: 123 * fem,
-                            height: 39 * fem,
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  // matricnumberE5B (8:35)
-                                  left: 0 * fem,
-                                  top: 0 * fem,
-                                  child: Align(
-                                    child: SizedBox(
-                                      width: 123 * fem,
-                                      height: 20 * fem,
-                                      child: Text(
-                                        'Matric Number:',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 16 * ffem,
-                                          fontWeight: FontWeight.w800,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff000000),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  // matricnumberKcR (8:36)
-                                  left: 2 * fem,
-                                  top: 19 * fem,
-                                  child: Align(
-                                    child: SizedBox(
-                                      width: 113 * fem,
-                                      height: 20 * fem,
-                                      child: Text(
-                                        'Matric Number',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 16 * ffem,
-                                          fontWeight: FontWeight.w400,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff727272),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 1 * fem,
-                          ),
-                          Container(
-                            // group14CRK (8:37)
-                            width: 37 * fem,
-                            height: 39 * fem,
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  // age9LZ (8:38)
-                                  left: 0 * fem,
-                                  top: 0 * fem,
-                                  child: Align(
-                                    child: SizedBox(
-                                      width: 37 * fem,
-                                      height: 20 * fem,
-                                      child: Text(
-                                        'Age:',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 16 * ffem,
-                                          fontWeight: FontWeight.w800,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff000000),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  // age2fF (8:39)
-                                  left: 2 * fem,
-                                  top: 19 * fem,
-                                  child: Align(
-                                    child: SizedBox(
-                                      width: 30 * fem,
-                                      height: 20 * fem,
-                                      child: Text(
-                                        'Age',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 16 * ffem,
-                                          fontWeight: FontWeight.w400,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff727272),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 1 * fem,
-                          ),
-                          Container(
-                            // group15XM7 (8:40)
-                            width: 64 * fem,
-                            height: 39 * fem,
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  // gendersvm (8:41)
-                                  left: 0 * fem,
-                                  top: 0 * fem,
-                                  child: Align(
-                                    child: SizedBox(
-                                      width: 64 * fem,
-                                      height: 20 * fem,
-                                      child: Text(
-                                        'Gender:',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 16 * ffem,
-                                          fontWeight: FontWeight.w800,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff000000),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  // genderyyo (8:42)
-                                  left: 3 * fem,
-                                  top: 19 * fem,
-                                  child: Align(
-                                    child: SizedBox(
-                                      width: 56 * fem,
-                                      height: 20 * fem,
-                                      child: Text(
-                                        'Gender',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 16 * ffem,
-                                          fontWeight: FontWeight.w400,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff727272),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 1 * fem,
-                          ),
-                          Container(
-                            // group16fbj (8:43)
-                            width: 45 * fem,
-                            height: 39 * fem,
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  // raceDNM (8:44)
-                                  left: 0 * fem,
-                                  top: 0 * fem,
-                                  child: Align(
-                                    child: SizedBox(
-                                      width: 45 * fem,
-                                      height: 20 * fem,
-                                      child: Text(
-                                        'Race:',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 16 * ffem,
-                                          fontWeight: FontWeight.w800,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff000000),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  // race7yX (8:45)
-                                  left: 2 * fem,
-                                  top: 19 * fem,
-                                  child: Align(
-                                    child: SizedBox(
-                                      width: 38 * fem,
-                                      height: 20 * fem,
-                                      child: Text(
-                                        'Race',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 16 * ffem,
-                                          fontWeight: FontWeight.w400,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff727272),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 1 * fem,
-                          ),
-                          Container(
-                            // group17QSq (8:46)
-                            width: 49 * fem,
-                            height: 39 * fem,
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  // emailLrH (8:47)
-                                  left: 0 * fem,
-                                  top: 0 * fem,
-                                  child: Align(
-                                    child: SizedBox(
-                                      width: 49 * fem,
-                                      height: 20 * fem,
-                                      child: Text(
-                                        'Email:',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 16 * ffem,
-                                          fontWeight: FontWeight.w800,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff000000),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  // email2z1 (8:48)
-                                  left: 3 * fem,
-                                  top: 19 * fem,
-                                  child: Align(
-                                    child: SizedBox(
-                                      width: 41 * fem,
-                                      height: 20 * fem,
-                                      child: Text(
-                                        'Email',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 16 * ffem,
-                                          fontWeight: FontWeight.w400,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff727272),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+              Positioned(
+                left: 20 * fem,
+                top: 30 * fem,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop(); // This will navigate back
+                  },
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(
+                        0 * fem, 0 * fem, 100 * fem, 0.68 * fem),
+                    width: 21.88 * fem,
+                    height: 21.32 * fem,
+                    child: Icon(
+                      Icons.arrow_back,
+                      size: 30 * fem,
+                      color: Colors.white,
                     ),
-                    Container(
-                      // group61LUu (8:50)
-                      margin: EdgeInsets.fromLTRB(
-                          117 * fem, 0 * fem, 113 * fem, 0 * fem),
-                      width: double.infinity,
-                      height: 50 * fem,
-                      decoration: BoxDecoration(
-                        color: Color(0xff407bff),
-                        borderRadius: BorderRadius.circular(10 * fem),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'EDIT',
-                          style: SafeGoogleFont(
-                            'Inter',
-                            fontSize: 16 * ffem,
-                            fontWeight: FontWeight.w600,
-                            height: 1.2125 * ffem / fem,
-                            color: Color(0xffffffff),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-            Positioned(
-              // frame5o7b (8:53)
-              left: 0 * fem,
-              top: 735 * fem,
-              child: Container(
-                padding:
-                    EdgeInsets.fromLTRB(39 * fem, 11 * fem, 38 * fem, 11 * fem),
-                width: 360 * fem,
-                height: 65 * fem,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Color(0xff727272)),
-                  color: Color(0xffffffff),
+              Positioned(
+                left: 308 * fem,
+                top: 30 * fem,
+                child: GestureDetector(
+                  onTap: () async {
+                    // Perform logout when the icon is tapped
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => loginPage()));
+                    // Optionally, you can add navigation code to go to the login screen or any other screen after logout.
+                    // Example: Navigator.pushReplacementNamed(context, '/login');
+                  },
+                  child: Align(
+                    child: SizedBox(
+                      width: 30 * fem,
+                      height: 30 * fem,
+                      child: Icon(
+                        Icons
+                            .exit_to_app, // Replace with the appropriate logout icon
+                        size: 30 * fem,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
+              ),
+              Positioned(
+                left: 5 * fem,
+                top: 100 * fem,
                 child: Container(
-                  // group39J4M (8:54)
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                  padding: EdgeInsets.fromLTRB(
+                      12 * fem, 42 * fem, 18 * fem, 10 * fem),
+                  width: 360 * fem,
+                  height: 553 * fem,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        // group753Xj (8:55)
-                        margin: EdgeInsets.fromLTRB(
-                            0 * fem, 0 * fem, 60 * fem, 0 * fem),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              // vectornER (8:56)
-                              margin: EdgeInsets.fromLTRB(
-                                  0 * fem, 0 * fem, 0 * fem, 3 * fem),
-                              width: 30 * fem,
-                              height: 25 * fem,
-                              child: Image.asset(
-                                'assets/page-1/images/vector-SQD.png',
-                                width: 30 * fem,
-                                height: 25 * fem,
-                              ),
-                            ),
-                            Text(
-                              // homehMP (8:57)
-                              'Home',
-                              textAlign: TextAlign.center,
-                              style: SafeGoogleFont(
-                                'Inter',
-                                fontSize: 10 * ffem,
-                                fontWeight: FontWeight.w400,
-                                height: 1.2125 * ffem / fem,
-                                color: Color(0xff407bff),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        // group76dkq (8:65)
-                        width: 20 * fem,
-                        height: double.infinity,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              // vectorndj (8:66)
-                              width: 20 * fem,
-                              height: 30 * fem,
-                              child: Image.asset(
-                                'assets/page-1/images/vector-BfB.png',
-                                width: 20 * fem,
-                                height: 30 * fem,
-                              ),
-                            ),
-                            Container(
-                              // serXbK (8:67)
-                              width: double.infinity,
-                              child: Text(
-                                'SER',
-                                textAlign: TextAlign.center,
-                                style: SafeGoogleFont(
-                                  'Inter',
-                                  fontSize: 10 * ffem,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.2125 * ffem / fem,
-                                  color: Color(0xff727272),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        // autogroupydztrdb (NshnmF53GSW99XSX2FyDzT)
-                        padding: EdgeInsets.fromLTRB(
-                            55.5 * fem, 2 * fem, 0 * fem, 0 * fem),
-                        height: double.infinity,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                              // group77zE1 (8:58)
-                              margin: EdgeInsets.fromLTRB(
-                                  0 * fem, 0 * fem, 51.5 * fem, 0 * fem),
-                              height: double.infinity,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    // vectorKXB (8:59)
-                                    margin: EdgeInsets.fromLTRB(
-                                        0 * fem, 0 * fem, 1 * fem, 3 * fem),
-                                    width: 25 * fem,
-                                    height: 25 * fem,
-                                    child: Image.asset(
-                                      'assets/page-1/images/vector-Hws.png',
-                                      width: 25 * fem,
-                                      height: 25 * fem,
-                                    ),
-                                  ),
-                                  Text(
-                                    // historyeZT (8:60)
-                                    'History',
-                                    textAlign: TextAlign.center,
-                                    style: SafeGoogleFont(
-                                      'Inter',
-                                      fontSize: 10 * ffem,
-                                      fontWeight: FontWeight.w400,
-                                      height: 1.2125 * ffem / fem,
-                                      color: Color(0xff727272),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              // group78BpH (8:61)
-                              height: double.infinity,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    // group38wYZ (8:62)
-                                    margin: EdgeInsets.fromLTRB(
-                                        0 * fem, 0 * fem, 0 * fem, 3 * fem),
-                                    width: 25 * fem,
-                                    height: 25 * fem,
-                                    child: Image.asset(
-                                      'assets/page-1/images/group-38-hpy.png',
-                                      width: 25 * fem,
-                                      height: 25 * fem,
-                                    ),
-                                  ),
-                                  Text(
-                                    // profilesBK (8:64)
-                                    'Profile',
-                                    textAlign: TextAlign.center,
-                                    style: SafeGoogleFont(
-                                      'Inter',
-                                      fontSize: 10 * ffem,
-                                      fontWeight: FontWeight.w400,
-                                      height: 1.2125 * ffem / fem,
-                                      color: Color(0xff727272),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                      // User profile image
+                      CircleAvatar(
+                        radius: 50 * fem,
+                        backgroundImage:
+                            AssetImage('assets/page-1/images/vector-dD7.png'),
                       ),
                     ],
                   ),
                 ),
               ),
+            ]),
+          ),
+          Container(
+              padding:
+                  EdgeInsets.fromLTRB(28 * fem, 0 * fem, 30 * fem, 74 * fem),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Color(0xffffffff),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20 * fem),
+                  topRight: Radius.circular(20 * fem),
+                ),
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    TextFormField(
+                      controller: _nameController,
+                      keyboardType: TextInputType.name,
+                      enabled: isEditMode,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Name',
+                        hintText: 'Enter Your Name',
+                        prefixIcon: Icon(Icons.account_circle),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your name';
+                        }
+                        if (value.length < 5) {
+                          return 'Please provide a name at least 5 characters';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 30.0),
+                    TextFormField(
+                      controller: _nicknameController,
+                      keyboardType: TextInputType.name,
+                      enabled: isEditMode,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Nickname',
+                        hintText: 'Enter Your Nickname',
+                        prefixIcon: Icon(Icons.person),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your nickname';
+                        }
+                        if (value.length < 2) {
+                          return 'Please provide a name at least 3 characters';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 30.0),
+                    TextFormField(
+                      controller: _ageController,
+                      keyboardType: TextInputType.number,
+                      enabled: isEditMode,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Age',
+                        hintText: 'Enter Your Age',
+                        prefixIcon: Icon(Icons.cake), // Icon for age
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your age';
+                        }
+                        // Check if the input is a valid number
+                        try {
+                          int age = int.parse(value);
+                          if (age <= 0) {
+                            return 'Age must be a positive number';
+                          } else if (age >= 150) {
+                            return 'Age must be a posible age for human being';
+                          }
+                        } catch (e) {
+                          return 'Invalid age format';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 30.0),
+                    Container(
+                      // group34t5s (1:1145)
+
+                      width: double.infinity,
+                      height: 50 * fem,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10 * fem),
+                      ),
+                      child: isEditMode
+                          ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                  Container(
+                                    // racebky (1:1147)
+                                    margin: EdgeInsets.fromLTRB(
+                                        10 * fem, 0 * fem, 60 * fem, 0 * fem),
+                                    child: Text(
+                                      'Gender',
+                                      style: SafeGoogleFont(
+                                        'Inter',
+                                        fontSize: 14 * ffem,
+                                        fontWeight: FontWeight.w600,
+                                        height: 1.2125 * ffem / fem,
+                                        color: Color(0xff727272),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                      child: DropdownButtonFormField2<String>(
+                                    isExpanded: true,
+                                    decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 16),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      // Add more decoration..
+                                    ),
+                                    hint: const Text(
+                                      'Select Your Gender',
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                    items: genderItems
+                                        .map((item) => DropdownMenuItem<String>(
+                                              value: item,
+                                              child: Text(
+                                                item,
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ))
+                                        .toList(),
+                                    validator: (value) {
+                                      if (value == null && isEditMode) {
+                                        return 'Please select gender.';
+                                      }
+                                      return null;
+                                    },
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _genderController.text =
+                                            value.toString();
+                                      });
+                                    },
+                                    onSaved: (value) {
+                                      _genderController.text = value.toString();
+                                    },
+                                    buttonStyleData: const ButtonStyleData(
+                                      padding: EdgeInsets.only(right: 8),
+                                    ),
+                                    iconStyleData: const IconStyleData(
+                                      icon: Icon(
+                                        Icons.arrow_drop_down,
+                                        color: Colors.black45,
+                                      ),
+                                      iconSize: 24,
+                                    ),
+                                    dropdownStyleData: DropdownStyleData(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                    ),
+                                    menuItemStyleData: const MenuItemStyleData(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 16),
+                                    ),
+                                  )),
+                                ])
+                          : TextFormField(
+                              controller: _genderController,
+                              enabled: false, // Make it read-only
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Gender',
+                                hintText: 'Select Your Gender',
+                                prefixIcon: Icon(Icons.person),
+                              ),
+                            ),
+                    ),
+
+                    SizedBox(height: 30),
+                    Container(
+                      // group34t5s (1:1145)
+
+                      width: double.infinity,
+                      height: 49 * fem,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10 * fem),
+                      ),
+                      child: isEditMode
+                          ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  // racebky (1:1147)
+                                  margin: EdgeInsets.fromLTRB(
+                                      10 * fem, 0 * fem, 59 * fem, 0 * fem),
+                                  child: Text(
+                                    'Race',
+                                    style: SafeGoogleFont(
+                                      'Inter',
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2125 * ffem / fem,
+                                      color: Color(0xff727272),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: isEditMode
+                                      ? DropdownButtonFormField2<String>(
+                                          isExpanded: true,
+                                          decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 16),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
+                                            // Add more decoration..
+                                          ),
+                                          hint: const Text(
+                                            'Select Your Race',
+                                            style: TextStyle(fontSize: 14),
+                                          ),
+                                          items: raceItems
+                                              .map((item) =>
+                                                  DropdownMenuItem<String>(
+                                                    value: item,
+                                                    child: Text(
+                                                      item,
+                                                      style: const TextStyle(
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ))
+                                              .toList(),
+                                          validator: (value) {
+                                            if (value == null && isEditMode) {
+                                              return 'Please select race.';
+                                            }
+                                            return null;
+                                          },
+                                          onChanged: (value) {
+                                            if (isEditMode) {
+                                              setState(() {
+                                                _raceController.text =
+                                                    value.toString();
+                                              });
+                                            }
+                                          },
+                                          onSaved: (value) {
+                                            if (isEditMode) {
+                                              _raceController.text =
+                                                  value.toString();
+                                            }
+                                          },
+                                          buttonStyleData:
+                                              const ButtonStyleData(
+                                            padding: EdgeInsets.only(right: 8),
+                                          ),
+                                          iconStyleData: const IconStyleData(
+                                            icon: Icon(
+                                              Icons.arrow_drop_down,
+                                              color: Colors.black45,
+                                            ),
+                                            iconSize: 24,
+                                          ),
+                                          dropdownStyleData: DropdownStyleData(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
+                                          ),
+                                          menuItemStyleData:
+                                              const MenuItemStyleData(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 16),
+                                          ),
+                                        )
+                                      : TextFormField(
+                                          controller: _raceController,
+                                          enabled: false, // Make it read-only
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            labelText: 'Race',
+                                            hintText: 'Select Your Race',
+                                            prefixIcon: Icon(Icons.flag),
+                                          ),
+                                        ),
+                                ),
+                              ],
+                            )
+                          : TextFormField(
+                              controller: _raceController,
+                              enabled: false, // Make it read-only
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Race',
+                                hintText: 'Select Your Race',
+                                prefixIcon: Icon(Icons.flag),
+                              ),
+                            ),
+                    ),
+                    SizedBox(height: 30),
+                    TextFormField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      enabled: isEditMode,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Email Address',
+                        hintText: 'Enter Your Email',
+                        prefixIcon: Icon(Icons.email),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        if (!emailRegex.hasMatch(value)) {
+                          return 'Invalid email format';
+                        }
+                        if (!value.endsWith('.com')) {
+                          return 'Invalid email format';
+                        }
+                        return null;
+                      },
+                    ),
+                    // Edit button
+                    Container(
+                      margin: EdgeInsets.fromLTRB(
+                          0 * fem, 20 * fem, 0 * fem, 0 * fem),
+                      width: 150 * fem,
+                      height: 50 * fem,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Toggle edit mode
+                          setState(() {
+                            isEditMode = !isEditMode;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.blue, // Adjust the color as needed
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                        ),
+                        child: Text(
+                          isEditMode ? 'Save' : 'Edit',
+                          style: TextStyle(
+                            fontSize: 20 * fem,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ))
+        ])),
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(color: Colors.grey, width: 0.1), // Add top border
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+          child: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+              switch (index) {
+                case 0:
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => mainPage()));
+                  break;
+                case 1:
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Record()));
+                  break;
+                case 2:
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HistoryPage()));
+                  break;
+                case 3:
+                  break;
+              }
+            },
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.mic),
+                label: 'SER',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.history),
+                label: 'History',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'Profile',
+              ),
+            ],
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: Colors.blue,
+            unselectedItemColor: Colors.grey,
+            selectedLabelStyle: TextStyle(color: Colors.blue),
+            unselectedLabelStyle: TextStyle(color: Colors.grey),
+            backgroundColor: Colors.white,
+            elevation: 5, // Set the elevation to control the shadow
+            showSelectedLabels: true, // Show labels for selected items
+            showUnselectedLabels: true, // Show labels for unselected items
+            selectedFontSize: 14, // Set the font size for selected labels
+            unselectedFontSize: 14, // Set the font size for unselected labels
+          ),
+        ));
   }
 }

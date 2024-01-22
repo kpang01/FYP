@@ -4,7 +4,9 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:rtser/page-1/record.dart';
+import 'package:rtser/page-1/main-page.dart';
+
+//import 'package:rtser/page-1/record.dart';
 
 //import 'main-page.dart';
 import 'registration-page.dart';
@@ -124,10 +126,10 @@ class _LoginPageState extends State<loginPage>
                           0 * fem, 0 * fem, 1 * fem, 32.33 * fem),
                       width: 90 * fem,
                       height: 83.33 * fem,
-                      child: Image.asset(
-                        'assets/page-1/images/auto-group-xqpq.png',
-                        width: 83.33 * fem,
-                        height: 83.33 * fem,
+                      child: Icon(
+                        Icons.account_circle,
+                        size: 83 * fem,
+                        color: Colors.white, // Customize the color if needed
                       ),
                     ),
                     RichText(
@@ -439,7 +441,7 @@ class _LoginPageState extends State<loginPage>
       // You can add further logic or navigate to a new screen here
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Record()),
+        MaterialPageRoute(builder: (context) => mainPage()),
       );
 
       ScaffoldMessenger.of(context).showSnackBar(

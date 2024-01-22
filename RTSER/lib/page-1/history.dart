@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:rtser/utils.dart';
 
-class Scene extends StatelessWidget {
+class HistoryPage extends StatefulWidget {
+  @override
+  State<HistoryPage> createState() => _HistoryPageState();
+}
+
+class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     double baseWidth = 360;

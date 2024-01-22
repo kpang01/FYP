@@ -1,5 +1,21 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:rtser/utils.dart';
+import 'package:percent_indicator/percent_indicator.dart';
+import 'package:rtser/page-1/category.dart';
+
+import 'history.dart';
+import 'profile.dart';
+import 'record.dart';
+
+final List<String> imgList = [
+  'assets/page-1/images/Carousel-1.png',
+  'assets/page-1/images/Carousel-2.png',
+  'assets/page-1/images/Carousel-3.png',
+];
+
+final List<String> imgListEmotion = [
+  'assets/page-1/images/sad.png',
+];
 
 class mainPage extends StatefulWidget {
   @override
@@ -7,155 +23,411 @@ class mainPage extends StatefulWidget {
 }
 
 class _mainPageState extends State<mainPage> {
+  int _current = 0;
+  int _currentIndex = 0;
+  String searchText = '';
+
+  final CarouselController _controller = CarouselController();
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 360;
-    double fem = MediaQuery.of(context).size.width / baseWidth;
+    final double fem = MediaQuery.of(context).size.width / baseWidth;
     double ffem = fem * 0.97;
-    return Container(
-      width: double.infinity,
-      child: Container(
-        // mainpageXH7 (1:1298)
-        padding: EdgeInsets.fromLTRB(0 * fem, 41 * fem, 0 * fem, 0 * fem),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Color(0xff06030b),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              // autogroupds3vRdP (Nshc3oRX2iMwMFhnDdDS3V)
-              margin: EdgeInsets.fromLTRB(
-                  130.95 * fem, 0 * fem, 18 * fem, 18 * fem),
-              width: double.infinity,
-              height: 40 * fem,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    // frame59YT7 (1:1343)
-                    margin: EdgeInsets.fromLTRB(
-                        0 * fem, 5 * fem, 78.5 * fem, 5 * fem),
-                    height: double.infinity,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          // group58gJR (1:1344)
-                          margin: EdgeInsets.fromLTRB(
-                              0 * fem, 0 * fem, 9.55 * fem, 0 * fem),
-                          width: 30 * fem,
-                          height: 30 * fem,
-                          child: Image.asset(
-                            'assets/page-1/images/group-58.png',
-                            width: 30 * fem,
-                            height: 30 * fem,
-                          ),
-                        ),
-                        Container(
-                          // rtserbRP (1:1386)
-                          margin: EdgeInsets.fromLTRB(
-                              0 * fem, 2.5 * fem, 0 * fem, 0 * fem),
-                          child: Text(
-                            'RTSER',
-                            textAlign: TextAlign.center,
-                            style: SafeGoogleFont(
-                              'Inter',
-                              fontSize: 16 * ffem,
-                              fontWeight: FontWeight.w800,
-                              height: 1.2125 * ffem / fem,
-                              color: Color(0xff97bacc),
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Container(
+          width: double.infinity,
+          child: Container(
+            // mainpageXH7 (1:1298)
+            padding: EdgeInsets.fromLTRB(0 * fem, 41 * fem, 0 * fem, 0 * fem),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Color(0xffffffff),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  // autogroupds3vRdP (Nshc3oRX2iMwMFhnDdDS3V)
+                  margin: EdgeInsets.fromLTRB(
+                      130.95 * fem, 0 * fem, 18 * fem, 18 * fem),
+                  width: double.infinity,
+                  height: 40 * fem,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        // frame59YT7 (1:1343)
+                        margin: EdgeInsets.fromLTRB(
+                            0 * fem, 5 * fem, 78.5 * fem, 5 * fem),
+                        height: double.infinity,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              // group58gJR (1:1344)
+                              margin: EdgeInsets.fromLTRB(
+                                  0 * fem, 0 * fem, 9.55 * fem, 0 * fem),
+                              width: 30 * fem,
+                              height: 30 * fem,
+                              child: Image.asset(
+                                'assets/page-1/images/group-58.png',
+                                width: 30 * fem,
+                                height: 30 * fem,
+                              ),
                             ),
-                          ),
+                            Container(
+                              // rtserbRP (1:1386)
+                              margin: EdgeInsets.fromLTRB(
+                                  0 * fem, 2.5 * fem, 0 * fem, 0 * fem),
+
+                              child: RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  text: 'RTSER',
+                                  style: TextStyle(
+                                    fontSize: 16 * ffem,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xff97bacc),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        // frame31HJD (1:1396)
+                        width: 40 * fem,
+                        height: 40 * fem,
+                        child: Icon(
+                          Icons.account_circle,
+                          size: 38 * fem,
+                          color: Colors.black, // Customize the color if needed
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  // welcomebacknicknamepZ3 (1:1300)
+                  margin:
+                      EdgeInsets.fromLTRB(24 * fem, 0 * fem, 0 * fem, 0 * fem),
+                  constraints: BoxConstraints(
+                    maxWidth: 200 * fem,
+                  ),
+
+                  child: RichText(
+                    textAlign: TextAlign.left,
+                    text: TextSpan(
+                      text: 'Welcome to RTSER, \nNickname.',
+                      style: TextStyle(
+                        fontSize: 20 * ffem,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    // Example border styling
+                    borderRadius:
+                        BorderRadius.circular(8.0), // Example border radius
+                  ),
+                  margin: const EdgeInsets.all(25.0),
+                  child: SearchAnchor(builder:
+                      (BuildContext context, SearchController controller) {
+                    return SearchBar(
+                      controller: controller,
+                      padding: const MaterialStatePropertyAll<EdgeInsets>(
+                          EdgeInsets.symmetric(horizontal: 16.0)),
+                      onTap: () {
+                        controller.openView();
+                      },
+                      onChanged: (_) {
+                        controller.openView();
+                      },
+                      leading: const Icon(Icons.search),
+                      hintText: 'Type your search...',
+                    );
+                  }, suggestionsBuilder:
+                      (BuildContext context, SearchController controller) {
+                    return List<ListTile>.generate(5, (int index) {
+                      final String item = 'item $index';
+                      return ListTile(
+                        title: Text(item),
+                        onTap: () {
+                          setState(() {
+                            controller.closeView(item);
+                          });
+                        },
+                      );
+                    });
+                  }),
+                ),
+                Container(
+                  height: 200 * fem,
+                  child: CarouselSlider(
+                    items: imageSliders,
+                    carouselController: _controller,
+                    options: CarouselOptions(
+                        autoPlay: true,
+                        enlargeCenterPage: true,
+                        aspectRatio: 2.4,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            _current = index;
+                          });
+                        }),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: imgList.asMap().entries.map((entry) {
+                    return GestureDetector(
+                      onTap: () => _controller.animateToPage(entry.key),
+                      child: Container(
+                        width: 12.0,
+                        height: 12.0,
+                        margin: EdgeInsets.symmetric(
+                            vertical: 0.0, horizontal: 4.0),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color:
+                                (Theme.of(context).brightness == Brightness.dark
+                                        ? Colors.white
+                                        : Colors.grey)
+                                    .withOpacity(
+                                        _current == entry.key ? 0.9 : 0.4)),
+                      ),
+                    );
+                  }).toList(),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  // group5629K (1:1302)
+
+                  margin:
+                      EdgeInsets.fromLTRB(19 * fem, 0 * fem, 0 * fem, 24 * fem),
+                  width: 1065 * fem,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        // autogroupxrjjYdT (NshciceBGZ43qeCpRBXRJj)
+
+                        margin: EdgeInsets.fromLTRB(
+                            1 * fem, 0 * fem, 0 * fem, 10 * fem),
+                        width: double.infinity,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              // emotionscategory5NV (1:1303)
+                              margin: EdgeInsets.fromLTRB(
+                                  0 * fem, 0 * fem, 125 * fem, 0 * fem),
+                              child: RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  text: 'Emotions Category',
+                                  style: TextStyle(
+                                    fontSize: 20 * ffem,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.fromLTRB(
+                                  0 * fem, 0 * fem, 0 * fem, 2 * fem),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              EmotionCategory()));
+                                },
+                                child: RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    text: 'More',
+                                    style: TextStyle(
+                                      fontSize: 12 * ffem,
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xff407bff),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        width: 400, // Set a valid width
+                        height: 120.0,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 8,
+                            itemBuilder: (BuildContext context, int index) {
+                              return buildEmotionCard(index);
+                            }),
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  // recentaWq (1:1340)
+                  margin:
+                      EdgeInsets.fromLTRB(19 * fem, 0 * fem, 0 * fem, 7 * fem),
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'Recent',
+                      style: TextStyle(
+                        fontSize: 20 * ffem,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  // autogroupslef6k5 (NshcCYfwptxcebxY9ksLef)
+                  margin:
+                      EdgeInsets.fromLTRB(19 * fem, 0 * fem, 14 * fem, 5 * fem),
+                  padding:
+                      EdgeInsets.fromLTRB(5 * fem, 15 * fem, 6 * fem, 15 * fem),
+                  width: double.infinity,
+                  height: 100 * fem,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage(
+                        'assets/page-1/images/frame-19.png',
+                      ),
+                    ),
+                  ),
+                  child: Container(
+                    // group63oPb (1:1387)
+                    padding: EdgeInsets.fromLTRB(
+                        15 * fem, 6 * fem, 7 * fem, 5 * fem),
+                    width: double.infinity,
+                    height: 70 * fem,
+                    decoration: BoxDecoration(
+                      color: Color(0xffffffff),
+                      borderRadius: BorderRadius.circular(10 * fem),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0x3f000000),
+                          offset: Offset(2 * fem, 2 * fem),
+                          blurRadius: 1 * fem,
                         ),
                       ],
                     ),
-                  ),
-                  Container(
-                    // frame31HJD (1:1396)
-                    width: 40 * fem,
-                    height: 40 * fem,
-                    child: Image.asset(
-                      'assets/page-1/images/frame-31.png',
-                      width: 40 * fem,
-                      height: 40 * fem,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              // welcomebacknicknamepZ3 (1:1300)
-              margin: EdgeInsets.fromLTRB(24 * fem, 0 * fem, 0 * fem, 14 * fem),
-              constraints: BoxConstraints(
-                maxWidth: 156 * fem,
-              ),
-              child: Text(
-                'Welcome back, \nNickname.',
-                style: SafeGoogleFont(
-                  'Inter',
-                  fontSize: 20 * ffem,
-                  fontWeight: FontWeight.w800,
-                  height: 1.2125 * ffem / fem,
-                  color: Color(0xffffffff),
-                ),
-              ),
-            ),
-            Container(
-              // frame20hcq (1:1342)
-              margin:
-                  EdgeInsets.fromLTRB(15 * fem, 0 * fem, 15 * fem, 36 * fem),
-              width: double.infinity,
-              height: 170 * fem,
-              decoration: BoxDecoration(
-                color: Color(0xff686cd5),
-                borderRadius: BorderRadius.circular(20 * fem),
-              ),
-            ),
-            Container(
-              // group5629K (1:1302)
-              margin: EdgeInsets.fromLTRB(19 * fem, 0 * fem, 0 * fem, 24 * fem),
-              width: 1065 * fem,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    // autogroupxrjjYdT (NshciceBGZ43qeCpRBXRJj)
-                    margin: EdgeInsets.fromLTRB(
-                        1 * fem, 0 * fem, 738 * fem, 10 * fem),
-                    width: double.infinity,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          // emotionscategory5NV (1:1303)
+                          // sadHJm (1:1392)
                           margin: EdgeInsets.fromLTRB(
-                              0 * fem, 0 * fem, 105 * fem, 0 * fem),
+                              0 * fem, 0 * fem, 15 * fem, 1 * fem),
+                          width: 42 * fem,
+                          height: 42 * fem,
                           child: Text(
-                            'Emotions Category',
-                            textAlign: TextAlign.center,
-                            style: SafeGoogleFont(
-                              'Inter',
-                              fontSize: 20 * ffem,
-                              fontWeight: FontWeight.w800,
-                              height: 1.2125 * ffem / fem,
-                              color: Color(0xffffffff),
-                            ),
+                            '😢', // Replace this with the sad emoji you want
+                            style: TextStyle(
+                                fontSize: 32), // Adjust the font size as needed
                           ),
                         ),
                         Container(
-                          // more2S9 (1:1338)
+                          // autogroupq21hCgd (NshcPxWbhmF8wATjdJQ21h)
                           margin: EdgeInsets.fromLTRB(
-                              0 * fem, 0 * fem, 0 * fem, 2 * fem),
-                          child: Text(
-                            'More',
-                            textAlign: TextAlign.center,
-                            style: SafeGoogleFont(
-                              'Inter',
+                              0 * fem, 0 * fem, 37 * fem, 0 * fem),
+                          height: double.infinity,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  text: 'Speaker name',
+                                  style: TextStyle(
+                                    fontSize: 11 * ffem,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xff000000),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 2 * fem,
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                  text: 'Sad',
+                                  style: TextStyle(
+                                    fontSize: 10 * ffem,
+                                    fontWeight: FontWeight.w300,
+                                    color: Color(0xb2000000),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 2 * fem,
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                  text: '12 April 2023',
+                                  style: TextStyle(
+                                    fontSize: 10 * ffem,
+                                    fontWeight: FontWeight.w300,
+                                    color: Color(0xb2000000),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 2 * fem,
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                  text: '00:12:23',
+                                  style: TextStyle(
+                                    fontSize: 10 * ffem,
+                                    fontWeight: FontWeight.w300,
+                                    color: Color(0xb2000000),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(
+                              20 * fem, 0 * fem, 30 * fem, 1 * fem),
+                          child: CircularPercentIndicator(
+                            radius: 25.0,
+                            lineWidth: 5.0,
+                            animation: true,
+                            percent: 0.7,
+                            center: new Text(
+                              "70.0%",
+                              style: new TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 10.0),
+                            ),
+                            circularStrokeCap: CircularStrokeCap.round,
+                            progressColor: Colors.blueAccent,
+                          ),
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            text: 'More',
+                            style: TextStyle(
                               fontSize: 12 * ffem,
                               fontWeight: FontWeight.w600,
-                              height: 1.2125 * ffem / fem,
                               color: Color(0xff407bff),
                             ),
                           ),
@@ -163,713 +435,184 @@ class _mainPageState extends State<mainPage> {
                       ],
                     ),
                   ),
-                  Container(
-                    // frame17LSq (1:1304)
-                    width: double.infinity,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Container(
-                          // group444Nq (1:1305)
-                          width: 120 * fem,
-                          height: 120 * fem,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10 * fem),
-                          ),
-                          child: Container(
-                            // frame9btZ (1:1306)
-                            padding: EdgeInsets.fromLTRB(
-                                5 * fem, 0 * fem, 5 * fem, 8 * fem),
-                            width: double.infinity,
-                            height: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Color(0xffed892e),
-                              borderRadius: BorderRadius.circular(10 * fem),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0x3f000000),
-                                  offset: Offset(0 * fem, 4 * fem),
-                                  blurRadius: 2 * fem,
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  // sadgQD (1:1307)
-                                  margin: EdgeInsets.fromLTRB(
-                                      0 * fem, 0 * fem, 0 * fem, 9 * fem),
-                                  width: 110 * fem,
-                                  height: 78 * fem,
-                                  child: Image.asset(
-                                    'assets/page-1/images/sad.png',
-                                  ),
-                                ),
-                                Text(
-                                  // sadzA1 (1:1309)
-                                  'Sad',
-                                  textAlign: TextAlign.center,
-                                  style: SafeGoogleFont(
-                                    'Inter',
-                                    fontSize: 20 * ffem,
-                                    fontWeight: FontWeight.w800,
-                                    height: 1.2125 * ffem / fem,
-                                    color: Color(0xff263238),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 15 * fem,
-                        ),
-                        Container(
-                          // frame106yj (1:1310)
-                          padding: EdgeInsets.fromLTRB(
-                              10 * fem, 0 * fem, 10 * fem, 8 * fem),
-                          decoration: BoxDecoration(
-                            color: Color(0xff75d6f5),
-                            borderRadius: BorderRadius.circular(10 * fem),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x3f000000),
-                                offset: Offset(0 * fem, 4 * fem),
-                                blurRadius: 2 * fem,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                // angryCms (1:1311)
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 0 * fem, 9 * fem),
-                                width: 100 * fem,
-                                height: 78 * fem,
-                                child: Image.asset(
-                                  'assets/page-1/images/angry.png',
-                                ),
-                              ),
-                              Text(
-                                // angrywDf (1:1313)
-                                'Angry',
-                                textAlign: TextAlign.center,
-                                style: SafeGoogleFont(
-                                  'Inter',
-                                  fontSize: 20 * ffem,
-                                  fontWeight: FontWeight.w800,
-                                  height: 1.2125 * ffem / fem,
-                                  color: Color(0xff263238),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 15 * fem,
-                        ),
-                        Container(
-                          // frame114ZB (1:1314)
-                          padding: EdgeInsets.fromLTRB(
-                              12 * fem, 0 * fem, 12 * fem, 10 * fem),
-                          width: 120 * fem,
-                          decoration: BoxDecoration(
-                            color: Color(0xff65b5ea),
-                            borderRadius: BorderRadius.circular(10 * fem),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x3f000000),
-                                offset: Offset(0 * fem, 4 * fem),
-                                blurRadius: 2 * fem,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                // calmN45 (1:1315)
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 0 * fem, 10 * fem),
-                                width: 96 * fem,
-                                height: 75 * fem,
-                                child: Image.asset(
-                                  'assets/page-1/images/calm-gQM.png',
-                                ),
-                              ),
-                              Text(
-                                // calmhMF (1:1317)
-                                'Calm',
-                                textAlign: TextAlign.center,
-                                style: SafeGoogleFont(
-                                  'Inter',
-                                  fontSize: 20 * ffem,
-                                  fontWeight: FontWeight.w800,
-                                  height: 1.2125 * ffem / fem,
-                                  color: Color(0xff263238),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 15 * fem,
-                        ),
-                        Container(
-                          // frame122PX (1:1318)
-                          padding: EdgeInsets.fromLTRB(
-                              28 * fem, 0 * fem, 28 * fem, 10 * fem),
-                          width: 120 * fem,
-                          decoration: BoxDecoration(
-                            color: Color(0xffff829b),
-                            borderRadius: BorderRadius.circular(10 * fem),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x3f000000),
-                                offset: Offset(0 * fem, 4 * fem),
-                                blurRadius: 2 * fem,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                // happy7vm (1:1319)
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 0 * fem, 10 * fem),
-                                width: 47 * fem,
-                                height: 75 * fem,
-                                child: Image.asset(
-                                  'assets/page-1/images/happy-PSM.png',
-                                ),
-                              ),
-                              Text(
-                                // happy45K (1:1321)
-                                'Happy',
-                                textAlign: TextAlign.center,
-                                style: SafeGoogleFont(
-                                  'Inter',
-                                  fontSize: 20 * ffem,
-                                  fontWeight: FontWeight.w800,
-                                  height: 1.2125 * ffem / fem,
-                                  color: Color(0xff263238),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 15 * fem,
-                        ),
-                        Container(
-                          // frame13Au3 (1:1322)
-                          padding: EdgeInsets.fromLTRB(
-                              21.5 * fem, 0 * fem, 21.5 * fem, 10 * fem),
-                          width: 120 * fem,
-                          decoration: BoxDecoration(
-                            color: Color(0xffffd966),
-                            borderRadius: BorderRadius.circular(10 * fem),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x3f000000),
-                                offset: Offset(0 * fem, 4 * fem),
-                                blurRadius: 2 * fem,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                // disgustf57 (1:1323)
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 0 * fem, 10 * fem),
-                                width: 60 * fem,
-                                height: 75 * fem,
-                                child: Image.asset(
-                                  'assets/page-1/images/disgust.png',
-                                ),
-                              ),
-                              Text(
-                                // disgustPG1 (1:1325)
-                                'Disgust',
-                                textAlign: TextAlign.center,
-                                style: SafeGoogleFont(
-                                  'Inter',
-                                  fontSize: 20 * ffem,
-                                  fontWeight: FontWeight.w800,
-                                  height: 1.2125 * ffem / fem,
-                                  color: Color(0xff263238),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 15 * fem,
-                        ),
-                        Container(
-                          // frame147C1 (1:1326)
-                          padding: EdgeInsets.fromLTRB(
-                              30 * fem, 0 * fem, 30 * fem, 10 * fem),
-                          width: 120 * fem,
-                          decoration: BoxDecoration(
-                            color: Color(0xffaeffac),
-                            borderRadius: BorderRadius.circular(10 * fem),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x3f000000),
-                                offset: Offset(0 * fem, 4 * fem),
-                                blurRadius: 2 * fem,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                // fearQgu (1:1327)
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 0 * fem, 10 * fem),
-                                width: 60 * fem,
-                                height: 75 * fem,
-                                child: Image.asset(
-                                  'assets/page-1/images/fear.png',
-                                ),
-                              ),
-                              Text(
-                                // fearLqT (1:1329)
-                                'Fear',
-                                textAlign: TextAlign.center,
-                                style: SafeGoogleFont(
-                                  'Inter',
-                                  fontSize: 20 * ffem,
-                                  fontWeight: FontWeight.w800,
-                                  height: 1.2125 * ffem / fem,
-                                  color: Color(0xff263238),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 15 * fem,
-                        ),
-                        Container(
-                          // frame15g8d (1:1334)
-                          padding: EdgeInsets.fromLTRB(
-                              23.5 * fem, 14 * fem, 23.5 * fem, 11 * fem),
-                          width: 120 * fem,
-                          decoration: BoxDecoration(
-                            color: Color(0xff9747ff),
-                            borderRadius: BorderRadius.circular(10 * fem),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x3f000000),
-                                offset: Offset(0 * fem, 4 * fem),
-                                blurRadius: 2 * fem,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                // neutralB5P (1:1335)
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 0 * fem, 10 * fem),
-                                width: 54 * fem,
-                                height: 60 * fem,
-                                child: Image.asset(
-                                  'assets/page-1/images/neutral.png',
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Text(
-                                // neutralJfo (1:1337)
-                                'Neutral',
-                                textAlign: TextAlign.center,
-                                style: SafeGoogleFont(
-                                  'Inter',
-                                  fontSize: 20 * ffem,
-                                  fontWeight: FontWeight.w800,
-                                  height: 1.2125 * ffem / fem,
-                                  color: Color(0xff263238),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 15 * fem,
-                        ),
-                        Container(
-                          // frame163NV (1:1330)
-                          margin: EdgeInsets.fromLTRB(
-                              0 * fem, 0 * fem, 0 * fem, 2 * fem),
-                          padding: EdgeInsets.fromLTRB(
-                              17.5 * fem, 0 * fem, 17.5 * fem, 10 * fem),
-                          width: 120 * fem,
-                          decoration: BoxDecoration(
-                            color: Color(0xffb63fcb),
-                            borderRadius: BorderRadius.circular(10 * fem),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x3f000000),
-                                offset: Offset(0 * fem, 4 * fem),
-                                blurRadius: 2 * fem,
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                // supriseKL1 (1:1331)
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 0 * fem, 10 * fem),
-                                width: 60 * fem,
-                                height: 75 * fem,
-                                child: Image.asset(
-                                  'assets/page-1/images/suprise-GsX.png',
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Text(
-                                // surpriseqZF (1:1333)
-                                'Surprise',
-                                textAlign: TextAlign.center,
-                                style: SafeGoogleFont(
-                                  'Inter',
-                                  fontSize: 20 * ffem,
-                                  fontWeight: FontWeight.w800,
-                                  height: 1.2125 * ffem / fem,
-                                  color: Color(0xff263238),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Container(
-              // recentaWq (1:1340)
-              margin: EdgeInsets.fromLTRB(19 * fem, 0 * fem, 0 * fem, 7 * fem),
-              child: Text(
-                'Recent',
-                style: SafeGoogleFont(
-                  'Inter',
-                  fontSize: 20 * ffem,
-                  fontWeight: FontWeight.w800,
-                  height: 1.2125 * ffem / fem,
-                  color: Color(0xffffffff),
-                ),
-              ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(color: Colors.grey, width: 0.1), // Add top border
+          ),
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+            switch (index) {
+              case 0:
+                break;
+              case 1:
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => Record()));
+                break;
+              case 2:
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HistoryPage()));
+                break;
+              case 3:
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()));
+                break;
+            }
+          },
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-            Container(
-              // autogroupslef6k5 (NshcCYfwptxcebxY9ksLef)
-              margin: EdgeInsets.fromLTRB(19 * fem, 0 * fem, 14 * fem, 5 * fem),
-              padding:
-                  EdgeInsets.fromLTRB(5 * fem, 15 * fem, 6 * fem, 15 * fem),
-              width: double.infinity,
-              height: 154 * fem,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage(
-                    'assets/page-1/images/frame-19.png',
-                  ),
-                ),
-              ),
-              child: Container(
-                // group63oPb (1:1387)
-                padding:
-                    EdgeInsets.fromLTRB(15 * fem, 6 * fem, 7 * fem, 5 * fem),
-                width: double.infinity,
-                height: 70 * fem,
-                decoration: BoxDecoration(
-                  color: Color(0xffffffff),
-                  borderRadius: BorderRadius.circular(10 * fem),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0x3f000000),
-                      offset: Offset(2 * fem, 2 * fem),
-                      blurRadius: 1 * fem,
-                    ),
-                  ],
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      // sadHJm (1:1392)
-                      margin: EdgeInsets.fromLTRB(
-                          0 * fem, 0 * fem, 15 * fem, 1 * fem),
-                      width: 42 * fem,
-                      height: 42 * fem,
-                      child: Image.asset(
-                        'assets/page-1/images/sad-iDj.png',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Container(
-                      // autogroupq21hCgd (NshcPxWbhmF8wATjdJQ21h)
-                      margin: EdgeInsets.fromLTRB(
-                          0 * fem, 0 * fem, 37 * fem, 0 * fem),
-                      height: double.infinity,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            // speakernameius (1:1393)
-                            'Speaker name',
-                            style: SafeGoogleFont(
-                              'Inter',
-                              fontSize: 11 * ffem,
-                              fontWeight: FontWeight.w600,
-                              height: 1.2125 * ffem / fem,
-                              color: Color(0xff000000),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 2 * fem,
-                          ),
-                          Text(
-                            // sadFeu (1:1391)
-                            'Sad',
-                            style: SafeGoogleFont(
-                              'Inter',
-                              fontSize: 10 * ffem,
-                              fontWeight: FontWeight.w300,
-                              height: 1.2125 * ffem / fem,
-                              color: Color(0xb2000000),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 2 * fem,
-                          ),
-                          Text(
-                            // april2023ax5 (1:1389)
-                            '12 April 2023',
-                            style: SafeGoogleFont(
-                              'Inter',
-                              fontSize: 10 * ffem,
-                              fontWeight: FontWeight.w300,
-                              height: 1.2125 * ffem / fem,
-                              color: Color(0xb2000000),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 2 * fem,
-                          ),
-                          Text(
-                            // i2h (1:1390)
-                            '00:12:23',
-                            style: SafeGoogleFont(
-                              'Inter',
-                              fontSize: 10 * ffem,
-                              fontWeight: FontWeight.w300,
-                              height: 1.2125 * ffem / fem,
-                              color: Color(0xb2000000),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      // httpslottiefilescomanimationsp (1:1395)
-                      margin: EdgeInsets.fromLTRB(
-                          0 * fem, 0 * fem, 36 * fem, 1 * fem),
-                      width: 58 * fem,
-                      height: 58 * fem,
-                      child: Image.asset(
-                        'assets/page-1/images/https-lottiefilescom-animations-percentage-loader-8mkqjvxpxz.png',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Text(
-                      // moreMrM (1:1394)
-                      'More',
-                      textAlign: TextAlign.center,
-                      style: SafeGoogleFont(
-                        'Inter',
-                        fontSize: 12 * ffem,
-                        fontWeight: FontWeight.w600,
-                        height: 1.2125 * ffem / fem,
-                        color: Color(0xff407bff),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.mic),
+              label: 'SER',
             ),
-            Container(
-              // frame5Hzu (1:1412)
-              padding:
-                  EdgeInsets.fromLTRB(39 * fem, 10.15 * fem, 38 * fem, 6 * fem),
-              width: double.infinity,
-              height: 60 * fem,
-              decoration: BoxDecoration(
-                border: Border.all(color: Color(0xff727272)),
-                color: Color(0xffffffff),
-              ),
-              child: Container(
-                // group39DNm (1:1413)
-                width: double.infinity,
-                height: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      // group38y73 (1:1414)
-                      margin: EdgeInsets.fromLTRB(
-                          0 * fem, 0 * fem, 0 * fem, 3.15 * fem),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            // vectorsy7 (1:1415)
-                            margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 0 * fem, 0.92 * fem),
-                            width: 30 * fem,
-                            height: 23.08 * fem,
-                            child: Image.asset(
-                              'assets/page-1/images/vector-Bzm.png',
-                              width: 30 * fem,
-                              height: 23.08 * fem,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 60 * fem,
-                          ),
-                          Container(
-                            // vectorNus (1:1418)
-                            width: 20 * fem,
-                            height: 27.69 * fem,
-                            child: Image.asset(
-                              'assets/page-1/images/vector-Kz5.png',
-                              width: 20 * fem,
-                              height: 27.69 * fem,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 60 * fem,
-                          ),
-                          Container(
-                            // vectorVjb (1:1417)
-                            margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 0 * fem, 0.92 * fem),
-                            width: 25 * fem,
-                            height: 23.08 * fem,
-                            child: Image.asset(
-                              'assets/page-1/images/vector-y81.png',
-                              width: 25 * fem,
-                              height: 23.08 * fem,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 60 * fem,
-                          ),
-                          Container(
-                            // vectorokH (1:1416)
-                            margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 0 * fem, 0.92 * fem),
-                            width: 25 * fem,
-                            height: 23.08 * fem,
-                            child: Image.asset(
-                              'assets/page-1/images/vector-MY9.png',
-                              width: 25 * fem,
-                              height: 23.08 * fem,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      // autogroupvnaxwbb (NshdkAmHAew94q5bVDvnaX)
-                      margin: EdgeInsets.fromLTRB(
-                          1 * fem, 0 * fem, 0 * fem, 0 * fem),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            // homeH9f (1:1419)
-                            margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 61 * fem, 0 * fem),
-                            child: Text(
-                              'Home',
-                              textAlign: TextAlign.center,
-                              style: SafeGoogleFont(
-                                'Inter',
-                                fontSize: 10 * ffem,
-                                fontWeight: FontWeight.w400,
-                                height: 1.2125 * ffem / fem,
-                                color: Color(0xff407bff),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            // ser15f (1:1422)
-                            margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 56.5 * fem, 0 * fem),
-                            child: Text(
-                              'SER',
-                              textAlign: TextAlign.center,
-                              style: SafeGoogleFont(
-                                'Inter',
-                                fontSize: 10 * ffem,
-                                fontWeight: FontWeight.w400,
-                                height: 1.2125 * ffem / fem,
-                                color: Color(0xff727272),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            // history7uP (1:1420)
-                            margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 51.5 * fem, 0 * fem),
-                            child: Text(
-                              'History',
-                              textAlign: TextAlign.center,
-                              style: SafeGoogleFont(
-                                'Inter',
-                                fontSize: 10 * ffem,
-                                fontWeight: FontWeight.w400,
-                                height: 1.2125 * ffem / fem,
-                                color: Color(0xff727272),
-                              ),
-                            ),
-                          ),
-                          Text(
-                            // profileqaV (1:1421)
-                            'Profile',
-                            textAlign: TextAlign.center,
-                            style: SafeGoogleFont(
-                              'Inter',
-                              fontSize: 10 * ffem,
-                              fontWeight: FontWeight.w400,
-                              height: 1.2125 * ffem / fem,
-                              color: Color(0xff727272),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.history),
+              label: 'History',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
             ),
           ],
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+          selectedLabelStyle: TextStyle(color: Colors.blue),
+          unselectedLabelStyle: TextStyle(color: Colors.grey),
+          backgroundColor: Colors.white,
+          elevation: 5, // Set the elevation to control the shadow
+          showSelectedLabels: true, // Show labels for selected items
+          showUnselectedLabels: true, // Show labels for unselected items
+          selectedFontSize: 14, // Set the font size for selected labels
+          unselectedFontSize: 14, // Set the font size for unselected labels
         ),
       ),
     );
+  }
+
+  final List<Widget> imageSliders = imgList
+      .map((item) => Container(
+            child: Container(
+              margin: EdgeInsets.all(5.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                child: Stack(
+                  children: <Widget>[
+                    Image.asset(item, fit: BoxFit.cover, width: 1000.0),
+                  ],
+                ),
+              ),
+            ),
+          ))
+      .toList();
+
+  Widget buildEmotionCard(int index) {
+    List<String> emotionNames = [
+      'Sad',
+      'Angry',
+      'Calm',
+      'Happy',
+      'Disgust',
+      'Fear',
+      'Neutral',
+      'Surprise'
+    ];
+
+    List<String> emotionImages = [
+      'sad.png',
+      'angry.png',
+      'calm-gQM.png',
+      'happy-PSM.png',
+      'disgust.png',
+      'fear.png',
+      'neutral.png',
+      'suprise-GsX.png'
+    ];
+
+    List<Color> cardColors = [
+      Color(0xffed892e),
+      Color(0xff75d6f5),
+      Color(0xff65b5ea),
+      Color(0xffff829b),
+      Color(0xffffd966),
+      Color(0xffaeffac),
+      Color(0xff9747ff),
+      Color(0xffb63fcb),
+    ];
+
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 15.0),
+      width: 120.0,
+      decoration: BoxDecoration(
+        color: cardColors[index], // Use different color for each emotion card
+        borderRadius: BorderRadius.circular(10.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            offset: Offset(0, 4),
+            blurRadius: 2,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: 10.0),
+            width: 120.0,
+            height: 78.0,
+            child: Image.asset(
+              'assets/page-1/images/${emotionImages[index]}',
+            ),
+          ),
+          Text(
+            emotionNames[index],
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String getEmojiForEmotion(String emotion) {
+    switch (emotion.toLowerCase()) {
+      case 'sad':
+        return '😢';
+      case 'angry':
+        return '😡';
+      case 'calm':
+        return '😌';
+      case 'happy':
+        return '😊';
+      case 'disgust':
+        return '🤢';
+      case 'fear':
+        return '😨';
+      case 'neutral':
+        return '😐';
+      case 'surprise':
+        return '😮';
+      default:
+        return '';
+    }
   }
 }
