@@ -4,14 +4,17 @@ import 'dart:io';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:rtser/page-1/playaudio.dart';
 
 import 'history.dart';
+import 'login-page.dart';
 import 'main-page.dart';
 import 'profile.dart';
+import 'ser-process.dart';
 
 class Record extends StatefulWidget {
   @override
@@ -20,28 +23,47 @@ class Record extends StatefulWidget {
 
 class _RecordState extends State<Record> {
   late final RecorderController recorderController;
+
   late Duration recordingDuration;
+
   late Timer _timer;
 
   String? path;
+
   String? musicFile;
+
   bool isRecording = false;
+
   bool isRecordingCompleted = false;
+
   bool isLoading = true;
+
   late Directory appDirectory;
+
   int _currentIndex = 1;
+
+  String? currentEmotion = 'N/A';
+
+  int uploadCounter = 0;
+
+  double currentPercentage = 0.0;
 
   @override
   void initState() {
     super.initState();
+
     _getDir();
+
     _initialiseControllers();
   }
 
   void _getDir() async {
     appDirectory = await getApplicationDocumentsDirectory();
-    path = "${appDirectory.path}/recording.m4a";
+
+    path = "${appDirectory.path}/recording.wav";
+
     isLoading = false;
+
     setState(() {});
   }
 
@@ -51,13 +73,16 @@ class _RecordState extends State<Record> {
       ..androidOutputFormat = AndroidOutputFormat.mpeg4
       ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
       ..sampleRate = 44100;
+
     recordingDuration = Duration(seconds: 0);
   }
 
   void _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
+
     if (result != null) {
       musicFile = result.files.single.path;
+
       setState(() {});
     } else {
       debugPrint("File not picked");
@@ -67,15 +92,20 @@ class _RecordState extends State<Record> {
   @override
   void dispose() {
     recorderController.dispose();
+
     _timer.cancel();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     double baseWidth = 360;
+
     double fem = MediaQuery.of(context).size.width / baseWidth;
+
     double ffem = fem * 0.97;
+
     return Scaffold(
         backgroundColor: Color(0xff06030b),
         body: Padding(
@@ -114,12 +144,12 @@ class _RecordState extends State<Record> {
                           ),
                           Container(
                             margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 107 * fem, 1 * fem),
+                                0 * fem, 0 * fem, 95 * fem, 1 * fem),
                             child: RichText(
                               text: TextSpan(
                                 text: 'SER',
                                 style: TextStyle(
-                                  fontSize: 20 * ffem,
+                                  fontSize: 24 * ffem,
                                   fontWeight: FontWeight.w800,
                                   color: Colors.blueAccent,
                                 ),
@@ -127,14 +157,48 @@ class _RecordState extends State<Record> {
                             ),
                           ),
                           Container(
-                            // frame31HJD (1:1396)
-                            width: 40 * fem,
-                            height: 40 * fem,
-                            child: Icon(
-                              Icons.account_circle,
-                              size: 40 * fem,
-                              color:
-                                  Colors.white, // Customize the color if needed
+                            child: PopupMenuButton<int>(
+                              itemBuilder: (context) => [
+                                const PopupMenuItem(
+                                  value: 1,
+                                  child: ListTile(
+                                    leading: Icon(Icons.person),
+                                    title: Text('Profile'),
+                                  ),
+                                ),
+                                const PopupMenuItem(
+                                  value: 2,
+                                  child: ListTile(
+                                    leading: Icon(Icons.logout),
+                                    title: Text('Logout'),
+                                  ),
+                                ),
+                              ],
+                              onSelected: (value) {
+                                // Handle menu item selection
+                                switch (value) {
+                                  case 1:
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProfilePage()));
+                                    break;
+                                  case 2:
+                                    FirebaseAuth.instance.signOut();
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => loginPage()));
+                                    break;
+                                }
+                              },
+                              child: Icon(
+                                Icons.account_circle,
+                                size: 40 * fem,
+                                color: Colors
+                                    .white, // Customize the color if needed
+                              ),
                             ),
                           ),
                         ],
@@ -231,27 +295,36 @@ class _RecordState extends State<Record> {
           ),
           child: BottomNavigationBar(
             currentIndex: _currentIndex,
+
             onTap: (index) {
               setState(() {
                 _currentIndex = index;
               });
+
               switch (index) {
                 case 0:
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => mainPage()));
+
                   break;
+
                 case 1:
                   break;
+
                 case 2:
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => HistoryPage()));
+
                   break;
+
                 case 3:
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ProfilePage()));
+
                   break;
               }
             },
+
             items: [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
@@ -270,16 +343,27 @@ class _RecordState extends State<Record> {
                 label: 'Profile',
               ),
             ],
+
             type: BottomNavigationBarType.fixed,
+
             selectedItemColor: Colors.blue,
+
             unselectedItemColor: Colors.grey,
+
             selectedLabelStyle: TextStyle(color: Colors.blue),
+
             unselectedLabelStyle: TextStyle(color: Colors.grey),
+
             backgroundColor: Colors.white,
+
             elevation: 5, // Set the elevation to control the shadow
+
             showSelectedLabels: true, // Show labels for selected items
+
             showUnselectedLabels: true, // Show labels for unselected items
+
             selectedFontSize: 14, // Set the font size for selected labels
+
             unselectedFontSize: 14, // Set the font size for unselected labels
           ),
         ));
@@ -290,29 +374,39 @@ class _RecordState extends State<Record> {
       if (isRecording) {
         recorderController.reset();
 
-        final path = await recorderController.stop(false);
+        final path = await recorderController.stop();
 
         if (path != null) {
           isRecordingCompleted = true;
+
           debugPrint(path);
+
           debugPrint("Recorded file size: ${File(path).lengthSync()}");
 
-          // Upload recorded audio file to Firebase Storage
-          await _uploadAudioToFirebase(path);
-        }
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProcessPage()),
+          );
 
-        // Stop and reset the timer when recording stops
-        _stopAndResetTimer();
+          // Upload recorded audio file to Firebase Storage
+
+          await _uploadAudioToFirebase(path);
+
+          // Reset and stop the timer
+
+          _stopAndResetTimer();
+        }
       } else {
         recordingDuration =
             Duration(seconds: 0); // Reset duration when recording starts
 
-        // Start the periodic timer to update the duration
-        _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+        _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) async {
           setState(() {
             recordingDuration = recordingDuration + Duration(seconds: 1);
           });
         });
+
+        // Start the periodic timer to update the duration
 
         await recorderController.record(path: path!);
       }
@@ -326,41 +420,115 @@ class _RecordState extends State<Record> {
   }
 
   // Function to stop and reset the timer
+
   void _stopAndResetTimer() {
     if (_timer != null && _timer.isActive) {
       _timer.cancel();
     }
+
     recordingDuration = Duration(seconds: 0);
+  }
+
+  Future<String> convertToWav(String inputPath) async {
+    final flutterFFmpeg = FlutterFFmpeg();
+
+    // Provide the output path for the WAV file
+    final outputPath = "${appDirectory.path}/converted.wav";
+
+    // Execute the FFmpeg command to convert the file
+    await flutterFFmpeg.execute(
+      "-i $inputPath -acodec pcm_s16le -ac 1 -ar 44100 -b:a 1411k $outputPath",
+    );
+
+    // Return the path of the converted WAV file
+    return outputPath;
   }
 
   Future<void> _uploadAudioToFirebase(String filePath) async {
     try {
-      File audioFile = File(filePath);
-      String fileName =
-          "recordings/${DateTime.now().millisecondsSinceEpoch}.m4a";
+      final wavFilePath = await convertToWav(filePath);
+      File audioFile = File(wavFilePath);
+      //File audioFile = File(filePath);
 
-      // Specify a reference by providing a path
+      final currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser == null) {
+        print("User not logged in.");
+
+        return;
+      }
+
+      String userId = currentUser.uid;
+
+      String fileName = "user_folders/$userId/temp/temp.wav";
+
       firebase_storage.Reference storageReference =
           firebase_storage.FirebaseStorage.instance.ref().child(fileName);
 
-      await storageReference.putFile(audioFile);
+      // Set the content type to audio/wav
+
+      firebase_storage.SettableMetadata metadata =
+          firebase_storage.SettableMetadata(
+        contentType: 'audio/wav',
+      );
+
+      // Upload audio file to Firebase Storage with content type set
+
+      await storageReference.putFile(
+        audioFile,
+        metadata,
+      );
+
+      // Get the download URL after upload is complete
+
       String downloadURL = await storageReference.getDownloadURL();
 
       // Now, you can save downloadURL to Firebase Database or perform any other actions.
 
       print("Audio file uploaded. Download URL: $downloadURL");
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PlayAudio()),
-      );
+      // Call the function to send audio to API with the download URL
+      audioFile.delete();
     } catch (e) {
-      // Handle audio file upload error
       print("Error uploading audio file: $e");
+
       if (e is firebase_storage.FirebaseException) {
         print("Firebase Storage Error Code: ${e.code}");
+
         print("Firebase Storage Error Message: ${e.message}");
+
         print("Firebase Storage Inner Exception: ${e.stackTrace}");
       }
+    }
+  }
+
+  String getEmojiForEmotion(String emotion) {
+    switch (emotion.toLowerCase()) {
+      case 'sad':
+        return '😢';
+
+      case 'angry':
+        return '😡';
+
+      case 'calm':
+        return '😌';
+
+      case 'happy':
+        return '😊';
+
+      case 'disgust':
+        return '🤢';
+
+      case 'fear':
+        return '😨';
+
+      case 'neutral':
+        return '😐';
+
+      case 'surprise':
+        return '😮';
+
+      default:
+        return '';
     }
   }
 }

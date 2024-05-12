@@ -1,5 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:rtser/page-1/login-page.dart';
 import 'package:rtser/page-1/main-page.dart';
@@ -39,7 +40,45 @@ class _ProfilePageState extends State<ProfilePage> {
   final RegExp emailRegex = RegExp(
     r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$',
   );
-  bool isEditMode = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Call a function to fetch user data from Firebase
+    fetchUserData();
+  }
+
+  void fetchUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference userRef =
+          FirebaseDatabase.instance.reference().child('users').child(user.uid);
+      try {
+        DataSnapshot snapshot =
+            await userRef.once().then((event) => event.snapshot);
+        if (snapshot.value != null) {
+          Map<dynamic, dynamic>? userData =
+              snapshot.value as Map<dynamic, dynamic>?;
+          if (userData != null) {
+            setState(() {
+              _nameController.text = userData['name'] ?? '';
+              _nicknameController.text = userData['nickname'] ?? '';
+              _ageController.text = userData['age'] ?? '';
+              _genderController.text = userData['gender'] ?? '';
+              _raceController.text = userData['race'] ?? '';
+              _emailController.text = userData['email'] ?? '';
+            });
+          } else {
+            print("User data is null or not in the expected format.");
+          }
+        }
+      } catch (error) {
+        print("Error fetching user data: $error");
+      }
+    }
+  }
+
+  bool isEditMode = false;
   @override
   Widget build(BuildContext context) {
     double baseWidth = 360;
@@ -262,6 +301,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                   Expanded(
                                       child: DropdownButtonFormField2<String>(
                                     isExpanded: true,
+                                    value: _genderController.text.isNotEmpty
+                                        ? _genderController.text
+                                        : null,
                                     decoration: InputDecoration(
                                       contentPadding:
                                           const EdgeInsets.symmetric(
@@ -366,6 +408,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                   child: isEditMode
                                       ? DropdownButtonFormField2<String>(
                                           isExpanded: true,
+                                          value: _raceController.text.isNotEmpty
+                                              ? _raceController.text
+                                              : null,
                                           decoration: InputDecoration(
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
@@ -491,13 +536,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: 50 * fem,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Toggle edit mode
+                          if (isEditMode) {
+                            // Save data if in edit mode
+                            updateUserData();
+                          }
                           setState(() {
                             isEditMode = !isEditMode;
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.blue, // Adjust the color as needed
+                          backgroundColor:
+                              Colors.blue, // Adjust the color as needed
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50.0),
                           ),
@@ -576,5 +625,26 @@ class _ProfilePageState extends State<ProfilePage> {
             unselectedFontSize: 14, // Set the font size for unselected labels
           ),
         ));
+  }
+
+  void updateUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference userRef =
+          FirebaseDatabase.instance.reference().child('users').child(user.uid);
+      try {
+        await userRef.update({
+          'name': _nameController.text,
+          'nickname': _nicknameController.text,
+          'age': _ageController.text,
+          'gender': _genderController.text,
+          'race': _raceController.text,
+          'email': _emailController.text,
+        });
+        print("User data updated successfully");
+      } catch (error) {
+        print("Error updating user data: $error");
+      }
+    }
   }
 }

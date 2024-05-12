@@ -5,6 +5,7 @@ import 'package:rtser/utils.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
   runApp(rtser());
 }

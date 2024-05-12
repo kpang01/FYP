@@ -42,21 +42,23 @@ dependencies:
   http: ^1.1.0
   dropdown_button2: ^2.3.8
   shared_preferences: ^2.0.8
-  firebase_core: ^2.24.2
-  firebase_auth: ^4.16.0
-  firebase_database: ^10.4.0
+  firebase_core: ^2.30.1
+  firebase_auth: ^4.19.0
+  firebase_database: ^10.5.4
   avatar_glow: ^3.0.1
   audio_waveforms: ^1.0.4
   path_provider: ^2.0.11
   file_picker: ^5.0.0
   record: ^5.0.4
   path: ^1.8.3
-  firebase_storage: ^11.6.0
+  firebase_storage: ^11.7.4
   carousel_slider: ^4.2.1
   flutter_emoji: ^2.5.1
   percent_indicator: ^4.2.3
   getwidget: ^ 4.0.0
-  
+  flutter_ffmpeg: ^0.4.2
+  flutter_launcher_icons: ^0.9.2
+  flutter_sound: ^9.0.1
 
 dev_dependencies:
   flutter_test:
@@ -69,7 +71,10 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
   
-  
+flutter_icons:
+    image_path: "assets/page-1/images/auto-group-8gcs.png"
+    android: true
+    ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -113,3 +118,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+    
+

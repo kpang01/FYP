@@ -1,8 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:rtser/page-1/Description.dart';
-import 'package:rtser/utils.dart';
 
+import 'Description.dart';
 import 'history.dart';
+import 'login-page.dart';
 import 'profile.dart';
 import 'record.dart';
 
@@ -21,19 +22,16 @@ class _EmotionCategoryState extends State<EmotionCategory> {
     return Scaffold(
         backgroundColor: Color(0xff06030b),
         body: Padding(
-          padding: EdgeInsets.fromLTRB(17 * fem, 41 * fem, 0 * fem, 0 * fem),
+          padding: EdgeInsets.fromLTRB(17 * fem, 41 * fem, 10 * fem, 0 * fem),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                // autogroup5kkdf4Z (NshhNjP6YiCrzWkPGk5kKd)
-
                 width: double.infinity,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      // autogroup3yw9n9B (NshgzfBYM7Axm7FRdZ3yw9)
                       margin: EdgeInsets.fromLTRB(
                           0 * fem, 0 * fem, 0 * fem, 3 * fem),
                       width: double.infinity,
@@ -42,8 +40,7 @@ class _EmotionCategoryState extends State<EmotionCategory> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              Navigator.of(context)
-                                  .pop(); // This will navigate back
+                              Navigator.of(context).pop();
                             },
                             child: Container(
                               margin: EdgeInsets.fromLTRB(
@@ -72,523 +69,48 @@ class _EmotionCategoryState extends State<EmotionCategory> {
                             ),
                           ),
                           Container(
-                            // frame31HJD (1:1396)
-                            width: 40 * fem,
-                            height: 40 * fem,
-                            child: Icon(
-                              Icons.account_circle,
-                              size: 40 * fem,
-                              color:
-                                  Colors.white, // Customize the color if needed
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      // frame21sBb (1:1424)
-                      margin: EdgeInsets.fromLTRB(
-                          30 * fem, 10 * fem, 50 * fem, 0 * fem),
-                      width: double.infinity,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            // autogroupipvxarh (NsheKz8GNxiHxSs4J8ipvX)
-                            width: double.infinity,
-                            height: 120 * fem,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    // Navigate to a new screen here
+                            child: PopupMenuButton<int>(
+                              itemBuilder: (context) => [
+                                const PopupMenuItem(
+                                  value: 1,
+                                  child: ListTile(
+                                    leading: Icon(Icons.person),
+                                    title: Text('Profile'),
+                                  ),
+                                ),
+                                const PopupMenuItem(
+                                  value: 2,
+                                  child: ListTile(
+                                    leading: Icon(Icons.logout),
+                                    title: Text('Logout'),
+                                  ),
+                                ),
+                              ],
+                              onSelected: (value) {
+                                // Handle menu item selection
+                                switch (value) {
+                                  case 1:
                                     Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Description()),
-                                    );
-                                  },
-                                  child: Container(
-                                    // group46KpH (1:1425)
-                                    margin: EdgeInsets.fromLTRB(
-                                        0 * fem, 0 * fem, 20 * fem, 0 * fem),
-                                    padding: EdgeInsets.fromLTRB(
-                                        10 * fem, 0 * fem, 10 * fem, 8 * fem),
-                                    width: 120 * fem,
-                                    height: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xff75d6f5),
-                                      borderRadius:
-                                          BorderRadius.circular(15 * fem),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color(0x3f000000),
-                                          offset: Offset(0 * fem, 4 * fem),
-                                          blurRadius: 2 * fem,
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          // angryBbb (1:1428)
-                                          margin: EdgeInsets.fromLTRB(0 * fem,
-                                              0 * fem, 0 * fem, 9 * fem),
-                                          width: 100 * fem,
-                                          height: 78 * fem,
-                                          child: Image.asset(
-                                            'assets/page-1/images/angry-oUZ.png',
-                                          ),
-                                        ),
-                                        Text(
-                                          // angryW85 (1:1427)
-                                          'Angry',
-                                          textAlign: TextAlign.center,
-                                          style: SafeGoogleFont(
-                                            'Inter',
-                                            fontSize: 20 * ffem,
-                                            fontWeight: FontWeight.w800,
-                                            height: 1.2125 * ffem / fem,
-                                            color: Color(0xff263238),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  // group48Epm (1:1429)
-                                  padding: EdgeInsets.fromLTRB(
-                                      12 * fem, 4 * fem, 12 * fem, 8 * fem),
-                                  width: 120 * fem,
-                                  height: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xff65b5ea),
-                                    borderRadius:
-                                        BorderRadius.circular(15 * fem),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Color(0x3f000000),
-                                        offset: Offset(0 * fem, 4 * fem),
-                                        blurRadius: 2 * fem,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        // calmKLR (1:1432)
-                                        margin: EdgeInsets.fromLTRB(
-                                            0 * fem, 0 * fem, 0 * fem, 8 * fem),
-                                        width: 96 * fem,
-                                        height: 75 * fem,
-                                        child: Image.asset(
-                                          'assets/page-1/images/calm.png',
-                                        ),
-                                      ),
-                                      Text(
-                                        // calmEyB (1:1431)
-                                        'Calm',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 20 * ffem,
-                                          fontWeight: FontWeight.w800,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff263238),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20 * fem,
-                          ),
-                          Container(
-                            // autogroupsx4fYU5 (NsheW9VzzwmaLpBrvWsX4F)
-                            width: double.infinity,
-                            height: 122 * fem,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  // group49UsX (1:1433)
-                                  margin: EdgeInsets.fromLTRB(
-                                      0 * fem, 0 * fem, 20 * fem, 0 * fem),
-                                  width: 120 * fem,
-                                  height: double.infinity,
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        // calmDKK (1:1434)
-                                        left: 0 * fem,
-                                        top: 2 * fem,
-                                        child: Align(
-                                          child: SizedBox(
-                                            width: 120 * fem,
-                                            height: 120 * fem,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        15 * fem),
-                                                color: Color(0xffffd966),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Color(0x3f000000),
-                                                    offset: Offset(
-                                                        0 * fem, 4 * fem),
-                                                    blurRadius: 2 * fem,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        // disgustVnd (1:1435)
-                                        left: 22 * fem,
-                                        top: 89 * fem,
-                                        child: Align(
-                                          child: SizedBox(
-                                            width: 77 * fem,
-                                            height: 25 * fem,
-                                            child: Text(
-                                              'Disgust',
-                                              textAlign: TextAlign.center,
-                                              style: SafeGoogleFont(
-                                                'Inter',
-                                                fontSize: 20 * ffem,
-                                                fontWeight: FontWeight.w800,
-                                                height: 1.2125 * ffem / fem,
-                                                color: Color(0xff263238),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        // disgustoHX (1:1436)
-                                        left: 31 * fem,
-                                        top: 0 * fem,
-                                        child: Align(
-                                          child: SizedBox(
-                                            width: 60 * fem,
-                                            height: 75 * fem,
-                                            child: Image.asset(
-                                              'assets/page-1/images/disgust-1Fs.png',
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  // group51Jk5 (1:1437)
-                                  width: 120 * fem,
-                                  height: double.infinity,
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        // calmfKj (1:1438)
-                                        left: 0 * fem,
-                                        top: 2 * fem,
-                                        child: Align(
-                                          child: SizedBox(
-                                            width: 120 * fem,
-                                            height: 120 * fem,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        15 * fem),
-                                                color: Color(0xffaeffac),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Color(0x3f000000),
-                                                    offset: Offset(
-                                                        0 * fem, 4 * fem),
-                                                    blurRadius: 2 * fem,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        // fearZAD (1:1439)
-                                        left: 38 * fem,
-                                        top: 89 * fem,
-                                        child: Align(
-                                          child: SizedBox(
-                                            width: 44 * fem,
-                                            height: 25 * fem,
-                                            child: Text(
-                                              'Fear',
-                                              textAlign: TextAlign.center,
-                                              style: SafeGoogleFont(
-                                                'Inter',
-                                                fontSize: 20 * ffem,
-                                                fontWeight: FontWeight.w800,
-                                                height: 1.2125 * ffem / fem,
-                                                color: Color(0xff263238),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        // fearexM (1:1440)
-                                        left: 30 * fem,
-                                        top: 0 * fem,
-                                        child: Align(
-                                          child: SizedBox(
-                                            width: 60 * fem,
-                                            height: 75 * fem,
-                                            child: Image.asset(
-                                              'assets/page-1/images/fear-kE1.png',
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20 * fem,
-                          ),
-                          Container(
-                            // autogroupedssZZX (NsheftimCdkSm7nXwBEDSs)
-                            width: double.infinity,
-                            height: 120 * fem,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  // happyudP (1:1441)
-                                  margin: EdgeInsets.fromLTRB(
-                                      0 * fem, 0 * fem, 20 * fem, 0 * fem),
-                                  padding: EdgeInsets.fromLTRB(
-                                      28 * fem, 8 * fem, 28 * fem, 8 * fem),
-                                  width: 120 * fem,
-                                  height: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffff829b),
-                                    borderRadius:
-                                        BorderRadius.circular(15 * fem),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Color(0x3f000000),
-                                        offset: Offset(0 * fem, 4 * fem),
-                                        blurRadius: 2 * fem,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        // happyyt9 (1:1444)
-                                        margin: EdgeInsets.fromLTRB(
-                                            1 * fem, 0 * fem, 0 * fem, 4 * fem),
-                                        width: 47 * fem,
-                                        height: 75 * fem,
-                                        child: Image.asset(
-                                          'assets/page-1/images/happy.png',
-                                        ),
-                                      ),
-                                      Text(
-                                        // happyWdB (1:1443)
-                                        'Happy',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 20 * ffem,
-                                          fontWeight: FontWeight.w800,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff263238),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  // group533t1 (1:1445)
-                                  padding: EdgeInsets.fromLTRB(
-                                      24 * fem, 11 * fem, 23 * fem, 8 * fem),
-                                  width: 120 * fem,
-                                  height: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xff9747ff),
-                                    borderRadius:
-                                        BorderRadius.circular(15 * fem),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Color(0x3f000000),
-                                        offset: Offset(0 * fem, 4 * fem),
-                                        blurRadius: 2 * fem,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        // neutraljVw (1:1448)
-                                        margin: EdgeInsets.fromLTRB(1 * fem,
-                                            0 * fem, 0 * fem, 16 * fem),
-                                        width: 54 * fem,
-                                        height: 60 * fem,
-                                        child: Image.asset(
-                                          'assets/page-1/images/neutral-3xZ.png',
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      Text(
-                                        // neutralraZ (1:1447)
-                                        'Neutral',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 20 * ffem,
-                                          fontWeight: FontWeight.w800,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff263238),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20 * fem,
-                          ),
-                          Container(
-                            // autogroupauqvmxR (NsheqdwXQKjKBRPCwqauqV)
-                            width: double.infinity,
-                            height: 120 * fem,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  // group45vqK (1:1449)
-                                  margin: EdgeInsets.fromLTRB(
-                                      0 * fem, 0 * fem, 20 * fem, 0 * fem),
-                                  padding: EdgeInsets.fromLTRB(
-                                      3 * fem, 0 * fem, 0.35 * fem, 8 * fem),
-                                  height: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffed892e),
-                                    borderRadius:
-                                        BorderRadius.circular(15 * fem),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Color(0x3f000000),
-                                        offset: Offset(0 * fem, 4 * fem),
-                                        blurRadius: 2 * fem,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        // sad1bs (1:1452)
-                                        margin: EdgeInsets.fromLTRB(
-                                            0 * fem, 0 * fem, 0 * fem, 9 * fem),
-                                        width: 116.65 * fem,
-                                        height: 78 * fem,
-                                        child: Image.asset(
-                                          'assets/page-1/images/sad-7fb.png',
-                                        ),
-                                      ),
-                                      Container(
-                                        // sadjnm (1:1451)
-                                        margin: EdgeInsets.fromLTRB(0 * fem,
-                                            0 * fem, 2.65 * fem, 0 * fem),
-                                        child: Text(
-                                          'Sad',
-                                          textAlign: TextAlign.center,
-                                          style: SafeGoogleFont(
-                                            'Inter',
-                                            fontSize: 20 * ffem,
-                                            fontWeight: FontWeight.w800,
-                                            height: 1.2125 * ffem / fem,
-                                            color: Color(0xff263238),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  // group55eeq (1:1453)
-                                  padding: EdgeInsets.fromLTRB(
-                                      18 * fem, 4 * fem, 17 * fem, 8 * fem),
-                                  width: 120 * fem,
-                                  height: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xffb425cd),
-                                    borderRadius:
-                                        BorderRadius.circular(15 * fem),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Color(0x3f000000),
-                                        offset: Offset(0 * fem, 4 * fem),
-                                        blurRadius: 2 * fem,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        // suprise8pu (1:1456)
-                                        margin: EdgeInsets.fromLTRB(
-                                            0 * fem, 0 * fem, 1 * fem, 8 * fem),
-                                        width: 60 * fem,
-                                        height: 75 * fem,
-                                        child: Image.asset(
-                                          'assets/page-1/images/suprise.png',
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      Text(
-                                        // surpriseU85 (1:1455)
-                                        'Surprise',
-                                        textAlign: TextAlign.center,
-                                        style: SafeGoogleFont(
-                                          'Inter',
-                                          fontSize: 20 * ffem,
-                                          fontWeight: FontWeight.w800,
-                                          height: 1.2125 * ffem / fem,
-                                          color: Color(0xff263238),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProfilePage()));
+                                    break;
+                                  case 2:
+                                    FirebaseAuth.instance.signOut();
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => loginPage()));
+                                    break;
+                                }
+                              },
+                              child: Icon(
+                                Icons.account_circle,
+                                size: 40 * fem,
+                                color: Colors
+                                    .white, // Customize the color if needed
+                              ),
                             ),
                           ),
                         ],
@@ -596,7 +118,69 @@ class _EmotionCategoryState extends State<EmotionCategory> {
                     ),
                   ],
                 ),
-              )
+              ),
+              SizedBox(height: 20 * fem),
+              Expanded(
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 20 * fem,
+                    mainAxisSpacing: 20 * fem,
+                    childAspectRatio: 1.3,
+                  ),
+                  itemCount: emotionData.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Description(
+                              emotionName: emotionData[index]['name'],
+                              emotionImage: emotionData[index]['image'],
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: _getEmotionColor(
+                              index), // Set color based on index
+                          borderRadius: BorderRadius.circular(15 * fem),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0x3f000000),
+                              offset: Offset(0 * fem, 4 * fem),
+                              blurRadius: 2 * fem,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(bottom: 8 * fem),
+                              width: 80 * fem,
+                              height: 80 * fem,
+                              child: Image.asset(
+                                emotionData[index]['image'],
+                              ),
+                            ),
+                            Text(
+                              emotionData[index]['name'],
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16 * ffem,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
@@ -660,5 +244,39 @@ class _EmotionCategoryState extends State<EmotionCategory> {
             unselectedFontSize: 14, // Set the font size for unselected labels
           ),
         ));
+  }
+
+  final List<Map<String, dynamic>> emotionData = [
+    {'name': 'Sad', 'image': 'assets/page-1/images/sad-7fb.png'},
+    {'name': 'Angry', 'image': 'assets/page-1/images/angry.png'},
+    {'name': 'Calm', 'image': 'assets/page-1/images/calm.png'},
+    {'name': 'Happy', 'image': 'assets/page-1/images/happy.png'},
+    {'name': 'Disgust', 'image': 'assets/page-1/images/disgust-1Fs.png'},
+    {'name': 'Fear', 'image': 'assets/page-1/images/fear-kE1.png'},
+    {'name': 'Neutral', 'image': 'assets/page-1/images/neutral-3xZ.png'},
+    {'name': 'Surprise', 'image': 'assets/page-1/images/suprise.png'},
+  ];
+
+  Color _getEmotionColor(int index) {
+    switch (index) {
+      case 0:
+        return Color(0xffed892e); // Sad
+      case 1:
+        return Color(0xff75d6f5); // Angry
+      case 2:
+        return Color(0xff65b5ea); // Calm
+      case 3:
+        return Color(0xffff829b); // Happy
+      case 4:
+        return Color(0xffffd966); // Disgust
+      case 5:
+        return Color(0xffaeffac); // Fear
+      case 6:
+        return Color(0xff9747ff); // Neutral
+      case 7:
+        return Color(0xffb425cd); // Surprise
+      default:
+        return Colors.grey;
+    }
   }
 }

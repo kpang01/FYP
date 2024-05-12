@@ -1,5 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:rtser/utils.dart';
+import 'package:percent_indicator/percent_indicator.dart';
+import 'package:rtser/page-1/main-page.dart';
+
+import 'historyPlayAudio.dart';
+import 'login-page.dart';
+import 'profile.dart';
+import 'record.dart';
 
 class HistoryPage extends StatefulWidget {
   @override
@@ -7,367 +15,564 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
+  bool isDone = false;
+  int _currentIndex = 2;
+  bool isPlaying = false;
+  bool showSelectableDot = false;
+  List<Map<String, dynamic>> historyData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchHistoryData();
+  }
+
+  Future<void> fetchHistoryData() async {
+    // Get the current user
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      DatabaseReference historyRef = FirebaseDatabase.instance
+          .reference()
+          .child('audio_files')
+          .child(user.uid);
+
+      try {
+        DataSnapshot snapshot =
+            await historyRef.once().then((event) => event.snapshot);
+
+        if (snapshot.value != null) {
+          // Extract data from snapshot
+          Map<dynamic, dynamic>? data =
+              snapshot.value as Map<dynamic, dynamic>?;
+
+          // Convert map to list of maps
+          List<Map<String, dynamic>> dataList = [];
+          data!.forEach((key, value) {
+            // Format the date
+            DateTime date = DateTime.parse(value['date']);
+            String formattedDate =
+                "${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year}";
+
+            // Convert list_emotion to List<String>
+            List<String> listEmotion = [];
+            if (value['list_emotion'] != null) {
+              value['list_emotion'].forEach((emotion) {
+                listEmotion.add(emotion);
+              });
+            }
+
+            dataList.add({
+              ...value,
+              'fileName': key,
+              'formattedDate': formattedDate, // Add formatted date
+              'isSelected': false, // Initialize isSelected to false
+              'list_emotion': listEmotion, // Add list_emotion field
+            });
+          });
+
+          // Print the fetched data
+          print("Fetched history data: $dataList");
+
+          // Update state with history data
+          setState(() {
+            historyData = dataList;
+          });
+        }
+      } catch (error) {
+        // Handle any potential errors
+        print("Error fetching history data: $error");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 360;
     double fem = MediaQuery.of(context).size.width / baseWidth;
     double ffem = fem * 0.97;
-    return Container(
-      width: double.infinity,
-      child: Container(
-        // historyX2M (1:1495)
-        padding: EdgeInsets.fromLTRB(0 * fem, 41 * fem, 0 * fem, 0 * fem),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Color(0xff000000),
-        ),
+    return Scaffold(
+      backgroundColor: Color(0xff06030b),
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(17 * fem, 41 * fem, 0 * fem, 0 * fem),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              // autogroupmqph2jo (NshfwGnACukrUqaUFYMqPh)
-              margin:
-                  EdgeInsets.fromLTRB(17 * fem, 0 * fem, 18 * fem, 17 * fem),
               width: double.infinity,
-              child: Row(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    // vectorZDw (1:1523)
                     margin: EdgeInsets.fromLTRB(
-                        0 * fem, 0 * fem, 112.12 * fem, 0.68 * fem),
-                    width: 21.88 * fem,
-                    height: 21.32 * fem,
-                    child: Image.asset(
-                      'assets/page-1/images/vector-nKX.png',
-                      width: 21.88 * fem,
-                      height: 21.32 * fem,
+                      0 * fem,
+                      0 * fem,
+                      0 * fem,
+                      3 * fem,
                     ),
-                  ),
-                  Container(
-                    // history4Rb (1:1522)
-                    margin: EdgeInsets.fromLTRB(
-                        0 * fem, 0 * fem, 92 * fem, 0 * fem),
-                    child: Text(
-                      'History',
-                      textAlign: TextAlign.center,
-                      style: SafeGoogleFont(
-                        'Inter',
-                        fontSize: 16 * ffem,
-                        fontWeight: FontWeight.w800,
-                        height: 1.2125 * ffem / fem,
-                        color: Color(0xffffffff),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    // frame31NBP (1:1520)
-                    width: 40 * fem,
-                    height: 40 * fem,
-                    child: Image.asset(
-                      'assets/page-1/images/frame-31-VLZ.png',
-                      width: 40 * fem,
-                      height: 40 * fem,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              // vector6dB (1:1504)
-              margin:
-                  EdgeInsets.fromLTRB(0 * fem, 0 * fem, 23.13 * fem, 15 * fem),
-              width: 21.88 * fem,
-              height: 25 * fem,
-              child: Image.asset(
-                'assets/page-1/images/vector-4rR.png',
-                width: 21.88 * fem,
-                height: 25 * fem,
-              ),
-            ),
-            Container(
-              // group63Dho (1:1496)
-              margin:
-                  EdgeInsets.fromLTRB(22 * fem, 0 * fem, 22 * fem, 532 * fem),
-              padding:
-                  EdgeInsets.fromLTRB(15 * fem, 6 * fem, 13 * fem, 5 * fem),
-              width: double.infinity,
-              height: 70 * fem,
-              decoration: BoxDecoration(
-                border: Border.all(color: Color(0xffc1c0c0)),
-                color: Color(0xffffffff),
-                borderRadius: BorderRadius.circular(10 * fem),
-                boxShadow: [
-                  BoxShadow(
-                    color: Color(0x3f000000),
-                    offset: Offset(2 * fem, 2 * fem),
-                    blurRadius: 1 * fem,
-                  ),
-                ],
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    // sadsGZ (1:1501)
-                    margin: EdgeInsets.fromLTRB(
-                        0 * fem, 0 * fem, 15 * fem, 1 * fem),
-                    width: 42 * fem,
-                    height: 42 * fem,
-                    child: Image.asset(
-                      'assets/page-1/images/sad-YQV.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Container(
-                    // autogroupojo5Bo3 (Nshg9GSB4zM9vHhTBtoJo5)
-                    margin: EdgeInsets.fromLTRB(
-                        0 * fem, 0 * fem, 37 * fem, 0 * fem),
-                    height: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    width: double.infinity,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          // speakernameK8Z (1:1502)
-                          'Speaker name',
-                          style: SafeGoogleFont(
-                            'Inter',
-                            fontSize: 11 * ffem,
-                            fontWeight: FontWeight.w600,
-                            height: 1.2125 * ffem / fem,
-                            color: Color(0xff000000),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            margin: EdgeInsets.fromLTRB(
+                              0 * fem,
+                              0 * fem,
+                              70 * fem,
+                              0.68 * fem,
+                            ),
+                            width: 21.88 * fem,
+                            height: 21.32 * fem,
+                            child: Icon(
+                              Icons.arrow_back,
+                              size: 21.88 * fem,
+                              color: Colors.blueAccent,
+                            ),
                           ),
                         ),
-                        SizedBox(
-                          height: 2 * fem,
-                        ),
-                        Text(
-                          // sadRxH (1:1500)
-                          'Sad',
-                          style: SafeGoogleFont(
-                            'Inter',
-                            fontSize: 10 * ffem,
-                            fontWeight: FontWeight.w300,
-                            height: 1.2125 * ffem / fem,
-                            color: Color(0xb2000000),
+                        Container(
+                          margin: EdgeInsets.fromLTRB(
+                            40 * fem,
+                            0 * fem,
+                            70 * fem,
+                            0 * fem,
+                          ),
+                          child: RichText(
+                            text: TextSpan(
+                              text: 'History',
+                              style: TextStyle(
+                                fontSize: 25 * ffem,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.blueAccent,
+                              ),
+                            ),
                           ),
                         ),
-                        SizedBox(
-                          height: 2 * fem,
-                        ),
-                        Text(
-                          // april2023Yn1 (1:1498)
-                          '12 April 2023',
-                          style: SafeGoogleFont(
-                            'Inter',
-                            fontSize: 10 * ffem,
-                            fontWeight: FontWeight.w300,
-                            height: 1.2125 * ffem / fem,
-                            color: Color(0xb2000000),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 2 * fem,
-                        ),
-                        Text(
-                          // qm7 (1:1499)
-                          '00:12:23',
-                          style: SafeGoogleFont(
-                            'Inter',
-                            fontSize: 10 * ffem,
-                            fontWeight: FontWeight.w300,
-                            height: 1.2125 * ffem / fem,
-                            color: Color(0xb2000000),
+                        Container(
+                          child: PopupMenuButton<int>(
+                            itemBuilder: (context) => [
+                              const PopupMenuItem(
+                                value: 1,
+                                child: ListTile(
+                                  leading: Icon(Icons.person),
+                                  title: Text('Profile'),
+                                ),
+                              ),
+                              const PopupMenuItem(
+                                value: 2,
+                                child: ListTile(
+                                  leading: Icon(Icons.logout),
+                                  title: Text('Logout'),
+                                ),
+                              ),
+                            ],
+                            onSelected: (value) {
+                              switch (value) {
+                                case 1:
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProfilePage(),
+                                    ),
+                                  );
+                                  break;
+                                case 2:
+                                  FirebaseAuth.instance.signOut();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => loginPage(),
+                                    ),
+                                  );
+                                  break;
+                              }
+                            },
+                            child: Icon(
+                              Icons.account_circle,
+                              size: 40 * fem,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Container(
-                    // httpslottiefilescomanimationsp (1:1503)
-                    margin: EdgeInsets.fromLTRB(
-                        0 * fem, 0 * fem, 40 * fem, 1 * fem),
-                    width: 58 * fem,
-                    height: 58 * fem,
-                    child: Image.asset(
-                      'assets/page-1/images/https-lottiefilescom-animations-percentage-loader-8mkqjvxpxz-Wb7.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Container(
-                    // vectorGLd (1:1661)
-                    margin:
-                        EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 1 * fem),
-                    width: 20 * fem,
-                    height: 20 * fem,
-                    child: Image.asset(
-                      'assets/page-1/images/vector-4Qd.png',
-                      width: 20 * fem,
-                      height: 20 * fem,
-                    ),
-                  ),
                 ],
               ),
             ),
-            Container(
-              // frame5yF3 (1:1524)
-              padding:
-                  EdgeInsets.fromLTRB(39 * fem, 10.15 * fem, 38 * fem, 6 * fem),
-              width: double.infinity,
-              height: 60 * fem,
-              decoration: BoxDecoration(
-                border: Border.all(color: Color(0xff727272)),
-                color: Color(0xffffffff),
-              ),
+            GestureDetector(
+              // Inside the "Done" button onTap handler:
+              onTap: () async {
+                if (isDone) {
+                  // Get the current user
+                  User? user = FirebaseAuth.instance.currentUser;
+
+                  if (user != null) {
+                    DatabaseReference historyRef = FirebaseDatabase.instance
+                        .reference()
+                        .child('audio_files')
+                        .child(user.uid);
+
+                    // Remove selected items from Firebase
+                    for (var item in historyData) {
+                      if (item['isSelected']) {
+                        try {
+                          await historyRef.child(item['fileName']).remove();
+                        } catch (error) {
+                          print("Error removing item from Firebase: $error");
+                        }
+                      }
+                    }
+                  }
+
+                  setState(() {
+                    // Remove selected items locally
+                    historyData.removeWhere((item) => item['isSelected']);
+                    // Reset selection
+                    historyData.forEach((item) {
+                      item['isSelected'] = false;
+                    });
+                    // Toggle "Done" state
+                    isDone = !isDone;
+                  });
+                } else {
+                  // Toggle "Done" state
+                  setState(() {
+                    isDone = !isDone;
+                  });
+                }
+              },
+
               child: Container(
-                // group396aZ (1:1525)
-                width: double.infinity,
-                height: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      // group383Eu (1:1526)
-                      margin: EdgeInsets.fromLTRB(
-                          0 * fem, 0 * fem, 0 * fem, 3.15 * fem),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            // vectorB6D (1:1527)
-                            margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 0 * fem, 0.92 * fem),
-                            width: 30 * fem,
-                            height: 23.08 * fem,
-                            child: Image.asset(
-                              'assets/page-1/images/vector-uid.png',
-                              width: 30 * fem,
-                              height: 23.08 * fem,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 60 * fem,
-                          ),
-                          Container(
-                            // vectorHQ9 (1:1530)
-                            width: 20 * fem,
-                            height: 27.69 * fem,
-                            child: Image.asset(
-                              'assets/page-1/images/vector-UuT.png',
-                              width: 20 * fem,
-                              height: 27.69 * fem,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 60 * fem,
-                          ),
-                          Container(
-                            // vectorQjf (1:1529)
-                            margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 0 * fem, 0.92 * fem),
-                            width: 25 * fem,
-                            height: 23.08 * fem,
-                            child: Image.asset(
-                              'assets/page-1/images/vector-PDF.png',
-                              width: 25 * fem,
-                              height: 23.08 * fem,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 60 * fem,
-                          ),
-                          Container(
-                            // vectorXZP (1:1528)
-                            margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 0 * fem, 0.92 * fem),
-                            width: 25 * fem,
-                            height: 23.08 * fem,
-                            child: Image.asset(
-                              'assets/page-1/images/vector-iS1.png',
-                              width: 25 * fem,
-                              height: 23.08 * fem,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      // autogroupmszbTC9 (NshgWfzAzvTbQPdoSjMszb)
-                      margin: EdgeInsets.fromLTRB(
-                          1 * fem, 0 * fem, 0 * fem, 0 * fem),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            // homenkD (1:1531)
-                            margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 61 * fem, 0 * fem),
-                            child: Text(
-                              'Home',
-                              textAlign: TextAlign.center,
-                              style: SafeGoogleFont(
-                                'Inter',
-                                fontSize: 10 * ffem,
-                                fontWeight: FontWeight.w400,
-                                height: 1.2125 * ffem / fem,
-                                color: Color(0xff727272),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            // serJiZ (1:1534)
-                            margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 56.5 * fem, 0 * fem),
-                            child: Text(
-                              'SER',
-                              textAlign: TextAlign.center,
-                              style: SafeGoogleFont(
-                                'Inter',
-                                fontSize: 10 * ffem,
-                                fontWeight: FontWeight.w400,
-                                height: 1.2125 * ffem / fem,
-                                color: Color(0xff727272),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            // historycz9 (1:1532)
-                            margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 51.5 * fem, 0 * fem),
-                            child: Text(
-                              'History',
-                              textAlign: TextAlign.center,
-                              style: SafeGoogleFont(
-                                'Inter',
-                                fontSize: 10 * ffem,
-                                fontWeight: FontWeight.w400,
-                                height: 1.2125 * ffem / fem,
-                                color: Color(0xff407bff),
-                              ),
-                            ),
-                          ),
-                          Text(
-                            // profileXbK (1:1533)
-                            'Profile',
-                            textAlign: TextAlign.center,
-                            style: SafeGoogleFont(
-                              'Inter',
-                              fontSize: 10 * ffem,
-                              fontWeight: FontWeight.w400,
-                              height: 1.2125 * ffem / fem,
-                              color: Color(0xff727272),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                margin: EdgeInsets.fromLTRB(
+                  270 * fem,
+                  20 * fem,
+                  0 * fem,
+                  0 * fem,
                 ),
+                width: 70 * fem,
+                height: 30 * fem,
+                child: isDone
+                    ? Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xff407bff),
+                          borderRadius: BorderRadius.circular(5 * fem),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Done',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16 * ffem,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xffffffff),
+                            ),
+                          ),
+                        ),
+                      )
+                    : Icon(
+                        Icons.delete,
+                        size: 30 * fem,
+                        color: Colors.white,
+                      ),
               ),
             ),
+            Container(
+              margin: EdgeInsets.fromLTRB(
+                0 * fem,
+                0 * fem,
+                14 * fem,
+                5 * fem,
+              ),
+              padding: EdgeInsets.fromLTRB(
+                5 * fem,
+                0 * fem,
+                6 * fem,
+                15 * fem,
+              ),
+              width: double.infinity,
+              height: 500 * fem,
+              child: ListView.builder(
+                itemCount: historyData.length,
+                itemBuilder: (context, index) {
+                  var item = historyData[index];
+
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 10 * fem),
+                    padding: EdgeInsets.fromLTRB(
+                      15 * fem,
+                      6 * fem,
+                      7 * fem,
+                      5 * fem,
+                    ),
+                    height: 70 * fem,
+                    decoration: BoxDecoration(
+                      color: Color(0xffffffff),
+                      borderRadius: BorderRadius.circular(10 * fem),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0x3f000000),
+                          offset: Offset(2 * fem, 2 * fem),
+                          blurRadius: 1 * fem,
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(right: 15 * fem),
+                          width: 42 * fem,
+                          height: 42 * fem,
+                          child: Text(
+                            getEmojiForEmotion(item['emotion']),
+                            style: TextStyle(fontSize: 32),
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  text: item['fileName'],
+                                  style: TextStyle(
+                                    fontSize: 11 * ffem,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xff000000),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 2 * fem),
+                              RichText(
+                                text: TextSpan(
+                                  text: item['emotion'],
+                                  style: TextStyle(
+                                    fontSize: 10 * ffem,
+                                    fontWeight: FontWeight.w300,
+                                    color: Color(0xb2000000),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 2 * fem),
+                              RichText(
+                                text: TextSpan(
+                                  text: item['formattedDate'],
+                                  style: TextStyle(
+                                    fontSize: 10 * ffem,
+                                    fontWeight: FontWeight.w300,
+                                    color: Color(0xb2000000),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 2 * fem),
+                              RichText(
+                                text: TextSpan(
+                                  text: formatDuration(item['duration']),
+                                  style: TextStyle(
+                                    fontSize: 10 * ffem,
+                                    fontWeight: FontWeight.w300,
+                                    color: Color(0xb2000000),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(right: 20 * fem),
+                          child: CircularPercentIndicator(
+                            radius: 25.0,
+                            lineWidth: 5.0,
+                            animation: true,
+                            percent: double.parse(item['percentage']) / 100.0,
+                            center: Text(
+                              '${item['percentage']}%',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10.0,
+                              ),
+                            ),
+                            circularStrokeCap: CircularStrokeCap.round,
+                            progressColor: Colors.blueAccent,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 4.0),
+                          child: isDone
+                              ? GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      item['isSelected'] = !item['isSelected'];
+                                    });
+                                  },
+                                  child: item['isSelected']
+                                      ? Icon(
+                                          Icons.radio_button_checked,
+                                          size: 25 * fem,
+                                          color: Colors.green,
+                                        )
+                                      : Icon(
+                                          Icons
+                                              .radio_button_unchecked, // Changed to radio button icon
+                                          size: 25 * ffem,
+                                          color: Color(0xff407bff),
+                                        ),
+                                )
+                              : GestureDetector(
+                                  onTap: () {
+                                    // Call the method to handle the play button click and pass the filename and predictedEmotions
+                                    handlePlayButtonClick(item['fileName'],
+                                        item['list_emotion'] ?? []);
+                                  },
+                                  child: Icon(
+                                    Icons.play_arrow,
+                                    size: 25 * ffem,
+                                    color: Color(0xff407bff),
+                                  ),
+                                ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            )
           ],
         ),
       ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: Colors.grey,
+              width: 0.1,
+            ),
+          ),
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+            switch (index) {
+              case 0:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => mainPage()),
+                );
+                break;
+              case 1:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Record()),
+                );
+                break;
+              case 2:
+                break;
+              case 3:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
+                break;
+            }
+          },
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.mic),
+              label: 'SER',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.history),
+              label: 'History',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+          selectedLabelStyle: TextStyle(color: Colors.blue),
+          unselectedLabelStyle: TextStyle(color: Colors.grey),
+          backgroundColor: Colors.white,
+          elevation: 5,
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+          selectedFontSize: 14,
+          unselectedFontSize: 14,
+        ),
+      ),
     );
+  }
+
+  void handlePlayButtonClick(String fileName, List<String> predictedEmotions) {
+    // Transfer data to the historyPlayAudio page
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => historyPlayAudio(
+          fileName: fileName,
+          predictedEmotions: predictedEmotions,
+        ),
+      ),
+    );
+  }
+
+  String getEmojiForEmotion(String emotion) {
+    switch (emotion.toLowerCase()) {
+      case 'sad':
+        return '😢';
+
+      case 'angry':
+        return '😡';
+
+      case 'calm':
+        return '😌';
+
+      case 'happy':
+        return '😊';
+
+      case 'disgust':
+        return '🤢';
+
+      case 'fear':
+        return '😨';
+
+      case 'neutral':
+        return '😐';
+
+      case 'surprise':
+        return '😮';
+
+      default:
+        return '';
+    }
+  }
+
+  String formatDuration(String durationString) {
+    double seconds = double.tryParse(durationString) ?? 0.0;
+
+    int hours = (seconds / 3600).floor();
+    int minutes = ((seconds % 3600) / 60).floor();
+    int remainingSeconds = (seconds % 60).round();
+
+    String hoursString = (hours < 10) ? '0$hours' : '$hours';
+    String minutesString = (minutes < 10) ? '0$minutes' : '$minutes';
+    String secondsString =
+        (remainingSeconds < 10) ? '0$remainingSeconds' : '$remainingSeconds';
+
+    return '$hoursString:$minutesString:$secondsString';
   }
 }

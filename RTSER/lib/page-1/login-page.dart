@@ -1,11 +1,11 @@
 import 'dart:async';
 
-//import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:rtser/page-1/main-page.dart';
 
+import 'ForgotPass.dart';
 //import 'package:rtser/page-1/record.dart';
 
 //import 'main-page.dart';
@@ -224,16 +224,25 @@ class _LoginPageState extends State<loginPage>
                       ),
                       SizedBox(height: 56.0),
                       Container(
-                        // forgetpasswordg3o (1:940)
                         margin: EdgeInsets.fromLTRB(
                             190 * fem, 0 * fem, 0 * fem, 10 * fem),
-                        child: RichText(
-                          text: TextSpan(
-                            text: 'Forget Password?',
-                            style: TextStyle(
-                              fontSize: 13 * ffem,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xff407bff),
+                        child: GestureDetector(
+                          onTap: () {
+                            // Navigate to the forgot password page
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ForgotPasswordPage()),
+                            );
+                          },
+                          child: RichText(
+                            text: TextSpan(
+                              text: 'Forget Password?',
+                              style: TextStyle(
+                                fontSize: 13 * ffem,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xff407bff),
+                              ),
                             ),
                           ),
                         ),

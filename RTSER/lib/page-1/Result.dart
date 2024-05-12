@@ -1,17 +1,41 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+import 'package:rtser/page-1/playaudio.dart';
 
 import 'history.dart';
+import 'login-page.dart';
 import 'main-page.dart';
 import 'profile.dart';
-import 'record.dart';
 
 class ResultPage extends StatefulWidget {
+  final String? finalEmotion;
+  final double percentage;
+  final List<String>? predictedEmotions;
+
+  const ResultPage(
+      {Key? key,
+      required this.finalEmotion,
+      required this.percentage,
+      required this.predictedEmotions})
+      : super(key: key);
+
   @override
   State<ResultPage> createState() => _ResultPageState();
 }
 
 class _ResultPageState extends State<ResultPage> {
   int _currentIndex = 1;
+  String fileName = "";
+  int duration = 0;
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 360;
@@ -59,12 +83,12 @@ class _ResultPageState extends State<ResultPage> {
                               ),
                               Container(
                                 margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 90 * fem, 1 * fem),
+                                    0 * fem, 0 * fem, 70 * fem, 1 * fem),
                                 child: RichText(
                                   text: TextSpan(
                                     text: 'Result',
                                     style: TextStyle(
-                                      fontSize: 20 * ffem,
+                                      fontSize: 24 * ffem,
                                       fontWeight: FontWeight.w800,
                                       color: Colors.blueAccent,
                                     ),
@@ -72,14 +96,49 @@ class _ResultPageState extends State<ResultPage> {
                                 ),
                               ),
                               Container(
-                                // frame31HJD (1:1396)
-                                width: 40 * fem,
-                                height: 40 * fem,
-                                child: Icon(
-                                  Icons.account_circle,
-                                  size: 40 * fem,
-                                  color: Colors
-                                      .white, // Customize the color if needed
+                                child: PopupMenuButton<int>(
+                                  itemBuilder: (context) => [
+                                    const PopupMenuItem(
+                                      value: 1,
+                                      child: ListTile(
+                                        leading: Icon(Icons.person),
+                                        title: Text('Profile'),
+                                      ),
+                                    ),
+                                    const PopupMenuItem(
+                                      value: 2,
+                                      child: ListTile(
+                                        leading: Icon(Icons.logout),
+                                        title: Text('Logout'),
+                                      ),
+                                    ),
+                                  ],
+                                  onSelected: (value) {
+                                    // Handle menu item selection
+                                    switch (value) {
+                                      case 1:
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProfilePage()));
+                                        break;
+                                      case 2:
+                                        FirebaseAuth.instance.signOut();
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    loginPage()));
+                                        break;
+                                    }
+                                  },
+                                  child: Icon(
+                                    Icons.account_circle,
+                                    size: 40 * fem,
+                                    color: Colors
+                                        .white, // Customize the color if needed
+                                  ),
                                 ),
                               ),
                             ],
@@ -112,7 +171,8 @@ class _ResultPageState extends State<ResultPage> {
                           height: 200 * fem,
                           child: Center(
                             child: Text(
-                              '😲', // Surprise emoji character
+                              getEmojiForEmotion(widget
+                                  .finalEmotion!), // Surprise emoji character
                               style: TextStyle(
                                 fontSize:
                                     130 * fem, // Adjust the font size as needed
@@ -135,7 +195,7 @@ class _ResultPageState extends State<ResultPage> {
                                 child: RichText(
                                   textAlign: TextAlign.center,
                                   text: TextSpan(
-                                    text: 'SURPRISE',
+                                    text: widget.finalEmotion.toString(),
                                     style: TextStyle(
                                       fontSize: 25 * ffem,
                                       fontWeight: FontWeight.w800,
@@ -147,7 +207,8 @@ class _ResultPageState extends State<ResultPage> {
                               RichText(
                                 textAlign: TextAlign.center,
                                 text: TextSpan(
-                                  text: '89.00 %',
+                                  text: widget.percentage.toStringAsFixed(2) +
+                                      "%",
                                   style: TextStyle(
                                     fontSize: 22 * ffem,
                                     fontWeight: FontWeight.w800,
@@ -172,30 +233,42 @@ class _ResultPageState extends State<ResultPage> {
                             children: [
                               Container(
                                 margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 42 * fem, 0 * fem),
+                                    15 * fem, 0 * fem, 40 * fem, 0 * fem),
                                 width: 120 * fem,
                                 height: 50 * fem,
                                 child: ElevatedButton(
                                   onPressed: () {
                                     // Add your process button functionality here
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => mainPage()));
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => SaveFileDialog(
+                                        onSave: saveAudioFile,
+                                        fileName: fileName,
+                                      ),
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: Colors
+                                    backgroundColor: Colors
                                         .blue, // Adjust the color as needed
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
                                   ),
-                                  child: Text(
-                                    'Save',
-                                    style: TextStyle(
-                                      fontSize: 20 * fem,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => mainPage()),
+                                      );
+                                    },
+                                    child: Text(
+                                      'Save',
+                                      style: TextStyle(
+                                        fontSize: 16 * fem,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -209,21 +282,28 @@ class _ResultPageState extends State<ResultPage> {
                                   onPressed: () {
                                     // Add your process button functionality here
                                     Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Record()));
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PlayAudio(
+                                          finalEmotion: widget.finalEmotion,
+                                          percentage: widget.percentage,
+                                          predictedEmotions:
+                                              widget.predictedEmotions,
+                                        ),
+                                      ),
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: Colors
+                                    backgroundColor: Colors
                                         .blue, // Adjust the color as needed
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
                                   ),
                                   child: Text(
-                                    'Try again',
+                                    'AudioPlayer',
                                     style: TextStyle(
-                                      fontSize: 20 * fem,
+                                      fontSize: 14 * fem,
                                       fontWeight: FontWeight.w600,
                                       color: Colors.white,
                                     ),
@@ -297,5 +377,157 @@ class _ResultPageState extends State<ResultPage> {
             unselectedFontSize: 14, // Set the font size for unselected labels
           ),
         ));
+  }
+
+  String getEmojiForEmotion(String emotion) {
+    switch (emotion.toLowerCase()) {
+      case 'sad':
+        return '😢';
+
+      case 'angry':
+        return '😡';
+
+      case 'calm':
+        return '😌';
+
+      case 'happy':
+        return '😊';
+
+      case 'disgust':
+        return '🤢';
+
+      case 'fear':
+        return '😨';
+
+      case 'neutral':
+        return '😐';
+
+      case 'surprise':
+        return '😮';
+
+      default:
+        return '';
+    }
+  }
+
+  String formatDuration(int seconds) {
+    int hours = seconds ~/ 3600;
+    int minutes = (seconds % 3600) ~/ 60;
+    int remainingSeconds = seconds % 60;
+
+    String hoursString = (hours < 10) ? '0$hours' : '$hours';
+    String minutesString = (minutes < 10) ? '0$minutes' : '$minutes';
+    String secondsString =
+        (remainingSeconds < 10) ? '0$remainingSeconds' : '$remainingSeconds';
+
+    return '$hoursString:$minutesString:$secondsString';
+  }
+
+  Future<void> saveAudioFile(String fileName) async {
+    try {
+      // Get the current user
+      User? user = FirebaseAuth.instance.currentUser;
+
+      // Check if user is authenticated
+      if (user != null) {
+        // Get references to the audio files in Firebase Storage
+        final oldRef = firebase_storage.FirebaseStorage.instance
+            .ref('user_folders/${user.uid}/temp/temp.wav');
+        final newRef = firebase_storage.FirebaseStorage.instance
+            .ref('user_folders/${user.uid}/audio/$fileName.wav');
+
+        // Get the data of the audio file
+        final fileData = await oldRef.getData();
+
+        // Store the data in the new location
+        await newRef.putData(fileData!,
+            firebase_storage.SettableMetadata(contentType: 'audio/wav'));
+
+        final downloadURL = await newRef.getDownloadURL();
+
+        // Use flutter_ffmpeg to get the duration
+        final FlutterFFprobe flutterFFprobe = FlutterFFprobe();
+        final mediaInfo = await flutterFFprobe.getMediaInformation(downloadURL);
+        final duration = mediaInfo.getMediaProperties()!['duration'];
+
+        // Save additional data to the Realtime Database
+        final databaseReference = FirebaseDatabase.instance.reference();
+        databaseReference
+            .child('audio_files')
+            .child(user.uid)
+            .child(fileName)
+            .set({
+          'userId': user.uid,
+          'downloadURL': downloadURL,
+          'fileName': fileName,
+          'date': DateTime.now().toString(),
+          'emotion': widget.finalEmotion,
+          'percentage': widget.percentage.toStringAsFixed(2),
+          'list_emotion': widget.predictedEmotions,
+          'duration': duration.toString(), // Use the retrieved duration
+          // Add more data as needed
+        });
+
+        // Delete the audio file from the old location
+        await oldRef.delete();
+
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Audio file saved successfully.'),
+        ));
+      } else {
+        // Show error message if user is not authenticated
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('User not authenticated.'),
+        ));
+      }
+    } catch (error) {
+      // Show error message if any error occurs during the process
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error saving audio file: $error'),
+      ));
+    }
+  }
+}
+
+class SaveFileDialog extends StatelessWidget {
+  final Function(String) onSave;
+  final String fileName;
+  SaveFileDialog({required this.onSave, required this.fileName});
+
+  @override
+  Widget build(BuildContext context) {
+    String fileName = '';
+
+    return AlertDialog(
+      title: Text('Save Audio File'),
+      content: TextField(
+        onChanged: (value) => fileName = value,
+        decoration: InputDecoration(labelText: 'Enter file name'),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            // Check if file name is not empty
+            if (fileName.isNotEmpty) {
+              onSave(fileName);
+              Navigator.of(context).pop();
+            } else {
+              // Show error message if file name is empty
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('Please enter a file name'),
+              ));
+            }
+          },
+          child: Text('Save'),
+        ),
+      ],
+    );
   }
 }

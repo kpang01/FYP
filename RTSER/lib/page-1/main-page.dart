@@ -1,9 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:rtser/page-1/category.dart';
 
+import 'Description.dart';
 import 'history.dart';
+import 'login-page.dart';
 import 'profile.dart';
 import 'record.dart';
 
@@ -26,8 +30,72 @@ class _mainPageState extends State<mainPage> {
   int _current = 0;
   int _currentIndex = 0;
   String searchText = '';
+  String nickname = '';
+  List<Map<String, dynamic>>? latestRecord;
 
   final CarouselController _controller = CarouselController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch current user's nickname from Firebase
+    fetchUserData();
+    fetchHistoryData();
+  }
+
+  Future<void> fetchHistoryData() async {
+    // Get the current user
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      DatabaseReference historyRef = FirebaseDatabase.instance
+          .reference()
+          .child('audio_files')
+          .child(user.uid);
+
+      // Listen to changes on the reference
+      historyRef.orderByChild('date').limitToLast(1).onValue.listen((event) {
+        DataSnapshot snapshot = event.snapshot;
+
+        if (snapshot.value != null) {
+          Map<dynamic, dynamic>? data =
+              snapshot.value as Map<dynamic, dynamic>?;
+
+          if (data != null) {
+            List<Map<String, dynamic>> dataList = [];
+
+            data.forEach((key, value) {
+              if (value is Map<dynamic, dynamic>) {
+                DateTime date = DateTime.parse(value['date']);
+                String formattedDate =
+                    "${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year}";
+
+                List<String> listEmotion =
+                    (value['list_emotion'] as List<dynamic>?)
+                            ?.whereType<String>()
+                            .toList() ??
+                        [];
+
+                dataList.add({
+                  ...value,
+                  'fileName': key,
+                  'formattedDate': formattedDate,
+                });
+              }
+            });
+
+            print("Fetched history data: $dataList");
+
+            setState(() {
+              latestRecord = dataList;
+            });
+          }
+        }
+      }, onError: (error) {
+        print("Error fetching history data: $error");
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +111,7 @@ class _mainPageState extends State<mainPage> {
             padding: EdgeInsets.fromLTRB(0 * fem, 41 * fem, 0 * fem, 0 * fem),
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Color(0xffffffff),
+              color: Colors.black,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +128,7 @@ class _mainPageState extends State<mainPage> {
                       Container(
                         // frame59YT7 (1:1343)
                         margin: EdgeInsets.fromLTRB(
-                            0 * fem, 5 * fem, 78.5 * fem, 5 * fem),
+                            0 * fem, 5 * fem, 77 * fem, 5 * fem),
                         height: double.infinity,
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -87,7 +155,7 @@ class _mainPageState extends State<mainPage> {
                                 text: TextSpan(
                                   text: 'RTSER',
                                   style: TextStyle(
-                                    fontSize: 16 * ffem,
+                                    fontSize: 18 * ffem,
                                     fontWeight: FontWeight.w800,
                                     color: Color(0xff97bacc),
                                   ),
@@ -98,13 +166,47 @@ class _mainPageState extends State<mainPage> {
                         ),
                       ),
                       Container(
-                        // frame31HJD (1:1396)
-                        width: 40 * fem,
-                        height: 40 * fem,
-                        child: Icon(
-                          Icons.account_circle,
-                          size: 38 * fem,
-                          color: Colors.black, // Customize the color if needed
+                        child: PopupMenuButton<int>(
+                          itemBuilder: (context) => [
+                            const PopupMenuItem(
+                              value: 1,
+                              child: ListTile(
+                                leading: Icon(Icons.person),
+                                title: Text('Profile'),
+                              ),
+                            ),
+                            const PopupMenuItem(
+                              value: 2,
+                              child: ListTile(
+                                leading: Icon(Icons.logout),
+                                title: Text('Logout'),
+                              ),
+                            ),
+                          ],
+                          onSelected: (value) {
+                            // Handle menu item selection
+                            switch (value) {
+                              case 1:
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ProfilePage()));
+                                break;
+                              case 2:
+                                FirebaseAuth.instance.signOut();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => loginPage()));
+                                break;
+                            }
+                          },
+                          child: Icon(
+                            Icons.account_circle,
+                            size: 40 * fem,
+                            color:
+                                Colors.white, // Customize the color if needed
+                          ),
                         ),
                       ),
                     ],
@@ -113,59 +215,22 @@ class _mainPageState extends State<mainPage> {
                 Container(
                   // welcomebacknicknamepZ3 (1:1300)
                   margin:
-                      EdgeInsets.fromLTRB(24 * fem, 0 * fem, 0 * fem, 0 * fem),
+                      EdgeInsets.fromLTRB(24 * fem, 0 * fem, 0 * fem, 20 * fem),
                   constraints: BoxConstraints(
-                    maxWidth: 200 * fem,
+                    maxWidth: 500 * fem,
                   ),
 
                   child: RichText(
                     textAlign: TextAlign.left,
                     text: TextSpan(
-                      text: 'Welcome to RTSER, \nNickname.',
+                      text: 'Welcome to RTSER, \n$nickname.',
                       style: TextStyle(
-                        fontSize: 20 * ffem,
+                        fontSize: 25 * ffem,
                         fontWeight: FontWeight.w800,
-                        color: Colors.black,
+                        color: Colors.blueAccent,
                       ),
                     ),
                   ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    // Example border styling
-                    borderRadius:
-                        BorderRadius.circular(8.0), // Example border radius
-                  ),
-                  margin: const EdgeInsets.all(25.0),
-                  child: SearchAnchor(builder:
-                      (BuildContext context, SearchController controller) {
-                    return SearchBar(
-                      controller: controller,
-                      padding: const MaterialStatePropertyAll<EdgeInsets>(
-                          EdgeInsets.symmetric(horizontal: 16.0)),
-                      onTap: () {
-                        controller.openView();
-                      },
-                      onChanged: (_) {
-                        controller.openView();
-                      },
-                      leading: const Icon(Icons.search),
-                      hintText: 'Type your search...',
-                    );
-                  }, suggestionsBuilder:
-                      (BuildContext context, SearchController controller) {
-                    return List<ListTile>.generate(5, (int index) {
-                      final String item = 'item $index';
-                      return ListTile(
-                        title: Text(item),
-                        onTap: () {
-                          setState(() {
-                            controller.closeView(item);
-                          });
-                        },
-                      );
-                    });
-                  }),
                 ),
                 Container(
                   height: 200 * fem,
@@ -198,7 +263,7 @@ class _mainPageState extends State<mainPage> {
                             color:
                                 (Theme.of(context).brightness == Brightness.dark
                                         ? Colors.white
-                                        : Colors.grey)
+                                        : Colors.blueAccent)
                                     .withOpacity(
                                         _current == entry.key ? 0.9 : 0.4)),
                       ),
@@ -229,7 +294,7 @@ class _mainPageState extends State<mainPage> {
                             Container(
                               // emotionscategory5NV (1:1303)
                               margin: EdgeInsets.fromLTRB(
-                                  0 * fem, 0 * fem, 125 * fem, 0 * fem),
+                                  0 * fem, 0 * fem, 125 * fem, 10 * fem),
                               child: RichText(
                                 textAlign: TextAlign.center,
                                 text: TextSpan(
@@ -237,7 +302,7 @@ class _mainPageState extends State<mainPage> {
                                   style: TextStyle(
                                     fontSize: 20 * ffem,
                                     fontWeight: FontWeight.w800,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
@@ -285,14 +350,14 @@ class _mainPageState extends State<mainPage> {
                 Container(
                   // recentaWq (1:1340)
                   margin:
-                      EdgeInsets.fromLTRB(19 * fem, 0 * fem, 0 * fem, 7 * fem),
+                      EdgeInsets.fromLTRB(19 * fem, 0 * fem, 0 * fem, 0 * fem),
                   child: RichText(
                     text: TextSpan(
                       text: 'Recent',
                       style: TextStyle(
                         fontSize: 20 * ffem,
                         fontWeight: FontWeight.w800,
-                        color: Colors.black,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -300,7 +365,7 @@ class _mainPageState extends State<mainPage> {
                 Container(
                   // autogroupslef6k5 (NshcCYfwptxcebxY9ksLef)
                   margin:
-                      EdgeInsets.fromLTRB(19 * fem, 0 * fem, 14 * fem, 5 * fem),
+                      EdgeInsets.fromLTRB(19 * fem, 0 * fem, 0 * fem, 20 * fem),
                   padding:
                       EdgeInsets.fromLTRB(5 * fem, 15 * fem, 6 * fem, 15 * fem),
                   width: double.infinity,
@@ -308,9 +373,7 @@ class _mainPageState extends State<mainPage> {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: AssetImage(
-                        'assets/page-1/images/frame-19.png',
-                      ),
+                      image: AssetImage('assets/page-1/images/frame-19.png'),
                     ),
                   ),
                   child: Container(
@@ -330,110 +393,148 @@ class _mainPageState extends State<mainPage> {
                         ),
                       ],
                     ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          // sadHJm (1:1392)
-                          margin: EdgeInsets.fromLTRB(
-                              0 * fem, 0 * fem, 15 * fem, 1 * fem),
-                          width: 42 * fem,
-                          height: 42 * fem,
-                          child: Text(
-                            '😢', // Replace this with the sad emoji you want
-                            style: TextStyle(
-                                fontSize: 32), // Adjust the font size as needed
-                          ),
-                        ),
-                        Container(
-                          // autogroupq21hCgd (NshcPxWbhmF8wATjdJQ21h)
-                          margin: EdgeInsets.fromLTRB(
-                              0 * fem, 0 * fem, 37 * fem, 0 * fem),
-                          height: double.infinity,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                    child: latestRecord != null &&
+                            latestRecord!
+                                .isNotEmpty // Check if the list is not empty
+                        ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              RichText(
-                                text: TextSpan(
-                                  text: 'Speaker name',
+                              Container(
+                                // sadHJm (1:1392)
+                                margin: EdgeInsets.fromLTRB(
+                                    0 * fem, 0 * fem, 15 * fem, 1 * fem),
+                                width: 42 * fem,
+                                height: 42 * fem,
+                                child: Text(
+                                  getEmojiForEmotion(latestRecord![0]
+                                      ['emotion']), // Access the first element
                                   style: TextStyle(
-                                    fontSize: 11 * ffem,
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xff000000),
-                                  ),
+                                      fontSize:
+                                          32), // Adjust the font size as needed
                                 ),
                               ),
-                              SizedBox(
-                                height: 2 * fem,
-                              ),
-                              RichText(
-                                text: TextSpan(
-                                  text: 'Sad',
-                                  style: TextStyle(
-                                    fontSize: 10 * ffem,
-                                    fontWeight: FontWeight.w300,
-                                    color: Color(0xb2000000),
-                                  ),
+                              Container(
+                                // autogroupq21hCgd (NshcPxWbhmF8wATjdJQ21h)
+                                margin: EdgeInsets.fromLTRB(
+                                    0 * fem, 0 * fem, 37 * fem, 0 * fem),
+                                height: double.infinity,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    RichText(
+                                      text: TextSpan(
+                                        text:
+                                            'File Name: ${latestRecord![0]['fileName'] ?? 'Unknown'}', // Access 'fileName' of the first element
+                                        style: TextStyle(
+                                          fontSize: 11 * ffem,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xff000000),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 2 * fem,
+                                    ),
+                                    RichText(
+                                      text: TextSpan(
+                                        text:
+                                            'Emotion: ${latestRecord![0]['emotion'] ?? 'Unknown'}', // Access 'emotion' of the first element
+                                        style: TextStyle(
+                                          fontSize: 10 * ffem,
+                                          fontWeight: FontWeight.w300,
+                                          color: Color(0xb2000000),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 2 * fem,
+                                    ),
+                                    RichText(
+                                      text: TextSpan(
+                                        text:
+                                            'Date: ${latestRecord![0]['formattedDate'] ?? 'Unknown'}', // Access 'formattedDate' of the first element
+                                        style: TextStyle(
+                                          fontSize: 10 * ffem,
+                                          fontWeight: FontWeight.w300,
+                                          color: Color(0xb2000000),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 2 * fem,
+                                    ),
+                                    RichText(
+                                      text: TextSpan(
+                                        text:
+                                            'Duration: ${formatDuration(latestRecord![0]['duration'] ?? '0.0')}', // Access 'duration' of the first element
+                                        style: TextStyle(
+                                          fontSize: 10 * ffem,
+                                          fontWeight: FontWeight.w300,
+                                          color: Color(0xb2000000),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              SizedBox(
-                                height: 2 * fem,
-                              ),
-                              RichText(
-                                text: TextSpan(
-                                  text: '12 April 2023',
-                                  style: TextStyle(
-                                    fontSize: 10 * ffem,
-                                    fontWeight: FontWeight.w300,
-                                    color: Color(0xb2000000),
+                              Container(
+                                margin: EdgeInsets.fromLTRB(
+                                    20 * fem, 0 * fem, 30 * fem, 1 * fem),
+                                child: CircularPercentIndicator(
+                                  radius: 25.0,
+                                  lineWidth: 5.0,
+                                  animation: true,
+                                  percent: latestRecord!.isNotEmpty &&
+                                          latestRecord![0]['percentage'] != null
+                                      ? double.tryParse(latestRecord![0]
+                                                  ['percentage']) !=
+                                              null
+                                          ? (double.parse(latestRecord![0]
+                                                  ['percentage']) /
+                                              100.0)
+                                          : 0.0
+                                      : 0.0,
+                                  center: Text(
+                                    '${latestRecord![0]['percentage'] ?? 0}%', // Default value is 0 if null
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 10.0),
                                   ),
+                                  circularStrokeCap: CircularStrokeCap.round,
+                                  progressColor: Colors.blueAccent,
                                 ),
                               ),
-                              SizedBox(
-                                height: 2 * fem,
-                              ),
-                              RichText(
-                                text: TextSpan(
-                                  text: '00:12:23',
-                                  style: TextStyle(
-                                    fontSize: 10 * ffem,
-                                    fontWeight: FontWeight.w300,
-                                    color: Color(0xb2000000),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HistoryPage()),
+                                  );
+                                },
+                                child: RichText(
+                                  text: TextSpan(
+                                    text: 'More',
+                                    style: TextStyle(
+                                      fontSize: 12 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xff407bff),
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.fromLTRB(
-                              20 * fem, 0 * fem, 30 * fem, 1 * fem),
-                          child: CircularPercentIndicator(
-                            radius: 25.0,
-                            lineWidth: 5.0,
-                            animation: true,
-                            percent: 0.7,
-                            center: new Text(
-                              "70.0%",
-                              style: new TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 10.0),
-                            ),
-                            circularStrokeCap: CircularStrokeCap.round,
-                            progressColor: Colors.blueAccent,
-                          ),
-                        ),
-                        RichText(
-                          text: TextSpan(
-                            text: 'More',
-                            style: TextStyle(
-                              fontSize: 12 * ffem,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xff407bff),
+                          )
+                        : Center(
+                            child: Text(
+                              'No recent records', // Display this if the list is empty
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 16 * ffem,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
                   ),
                 ),
               ],
@@ -504,6 +605,31 @@ class _mainPageState extends State<mainPage> {
     );
   }
 
+  void fetchUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DatabaseReference userRef =
+          FirebaseDatabase.instance.reference().child('users').child(user.uid);
+      try {
+        DataSnapshot snapshot =
+            await userRef.once().then((event) => event.snapshot);
+        if (snapshot.value != null) {
+          Map<dynamic, dynamic>? userData =
+              snapshot.value as Map<dynamic, dynamic>?;
+          if (userData != null) {
+            setState(() {
+              nickname = userData['nickname'] ?? '';
+            });
+          } else {
+            print("User data is null or not in the expected format.");
+          }
+        }
+      } catch (error) {
+        print("Error fetching user data: $error");
+      }
+    }
+  }
+
   final List<Widget> imageSliders = imgList
       .map((item) => Container(
             child: Container(
@@ -519,9 +645,94 @@ class _mainPageState extends State<mainPage> {
             ),
           ))
       .toList();
+  final List<String> emotionNames = [
+    'Sad',
+    'Angry',
+    'Calm',
+    'Happy',
+    'Disgust',
+    'Fear',
+    'Neutral',
+    'Surprise'
+  ];
 
+  final List<String> emotionImages = [
+    'sad.png',
+    'angry.png',
+    'calm-gQM.png',
+    'happy-PSM.png',
+    'disgust.png',
+    'fear.png',
+    'neutral.png',
+    'suprise-GsX.png'
+  ];
+
+  final List<Color> cardColors = [
+    Color(0xffed892e),
+    Color(0xff75d6f5),
+    Color(0xff65b5ea),
+    Color(0xffff829b),
+    Color(0xffffd966),
+    Color(0xffaeffac),
+    Color(0xff9747ff),
+    Color(0xffb63fcb),
+  ];
   Widget buildEmotionCard(int index) {
-    List<String> emotionNames = [
+    return GestureDetector(
+      onTap: () {
+        // Navigate to Description page and pass emotion data
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Description(
+              emotionName: emotionNames[index],
+              emotionImage: 'assets/page-1/images/${emotionImages[index]}',
+            ),
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 15.0),
+        width: 120.0,
+        decoration: BoxDecoration(
+          color: cardColors[index],
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              offset: Offset(0, 4),
+              blurRadius: 2,
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              margin: EdgeInsets.only(top: 10.0),
+              width: 120.0,
+              height: 78.0,
+              child: Image.asset(
+                'assets/page-1/images/${emotionImages[index]}',
+              ),
+            ),
+            Text(
+              emotionNames[index],
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<String> getFilteredEmotions(String query) {
+    final List<String> emotionNames = [
       'Sad',
       'Angry',
       'Calm',
@@ -532,87 +743,58 @@ class _mainPageState extends State<mainPage> {
       'Surprise'
     ];
 
-    List<String> emotionImages = [
-      'sad.png',
-      'angry.png',
-      'calm-gQM.png',
-      'happy-PSM.png',
-      'disgust.png',
-      'fear.png',
-      'neutral.png',
-      'suprise-GsX.png'
-    ];
+    if (query.isEmpty) {
+      return emotionNames;
+    }
 
-    List<Color> cardColors = [
-      Color(0xffed892e),
-      Color(0xff75d6f5),
-      Color(0xff65b5ea),
-      Color(0xffff829b),
-      Color(0xffffd966),
-      Color(0xffaeffac),
-      Color(0xff9747ff),
-      Color(0xffb63fcb),
-    ];
-
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 15.0),
-      width: 120.0,
-      decoration: BoxDecoration(
-        color: cardColors[index], // Use different color for each emotion card
-        borderRadius: BorderRadius.circular(10.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            offset: Offset(0, 4),
-            blurRadius: 2,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            margin: EdgeInsets.only(top: 10.0),
-            width: 120.0,
-            height: 78.0,
-            child: Image.asset(
-              'assets/page-1/images/${emotionImages[index]}',
-            ),
-          ),
-          Text(
-            emotionNames[index],
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.w800,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-    );
+    return emotionNames.where((emotion) {
+      return emotion.toLowerCase().contains(query.toLowerCase());
+    }).toList();
   }
 
   String getEmojiForEmotion(String emotion) {
     switch (emotion.toLowerCase()) {
       case 'sad':
         return '😢';
+
       case 'angry':
         return '😡';
+
       case 'calm':
         return '😌';
+
       case 'happy':
         return '😊';
+
       case 'disgust':
         return '🤢';
+
       case 'fear':
         return '😨';
+
       case 'neutral':
         return '😐';
+
       case 'surprise':
         return '😮';
+
       default:
         return '';
     }
+  }
+
+  String formatDuration(String durationString) {
+    double seconds = double.tryParse(durationString) ?? 0.0;
+
+    int hours = (seconds / 3600).floor();
+    int minutes = ((seconds % 3600) / 60).floor();
+    int remainingSeconds = (seconds % 60).round();
+
+    String hoursString = (hours < 10) ? '0$hours' : '$hours';
+    String minutesString = (minutes < 10) ? '0$minutes' : '$minutes';
+    String secondsString =
+        (remainingSeconds < 10) ? '0$remainingSeconds' : '$remainingSeconds';
+
+    return '$hoursString:$minutesString:$secondsString';
   }
 }

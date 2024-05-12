@@ -1,9 +1,16 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:rtser/utils.dart';
 
 import 'Result.dart';
 import 'history.dart';
+import 'login-page.dart';
 import 'main-page.dart';
 import 'profile.dart';
 
@@ -14,17 +21,17 @@ class ProcessPage extends StatefulWidget {
 
 class _ProcessPageState extends State<ProcessPage> {
   int _currentIndex = 1;
+  String? finalEmotion = 'N/A';
+  List<String> emotionList = [];
+  int uploadCounter = 0;
+
+  double currentPercentage = 0.0;
+
   @override
   void initState() {
     super.initState();
 
-    Future.delayed(Duration(seconds: 3), () {
-      // Navigate to the result page
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => ResultPage()),
-      );
-    });
+    getDownloadURL();
   }
 
   @override
@@ -73,12 +80,12 @@ class _ProcessPageState extends State<ProcessPage> {
                           ),
                           Container(
                             margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 107 * fem, 1 * fem),
+                                0 * fem, 0 * fem, 95 * fem, 1 * fem),
                             child: RichText(
                               text: TextSpan(
                                 text: 'SER',
                                 style: TextStyle(
-                                  fontSize: 20 * ffem,
+                                  fontSize: 24 * ffem,
                                   fontWeight: FontWeight.w800,
                                   color: Colors.blueAccent,
                                 ),
@@ -86,14 +93,48 @@ class _ProcessPageState extends State<ProcessPage> {
                             ),
                           ),
                           Container(
-                            // frame31HJD (1:1396)
-                            width: 40 * fem,
-                            height: 40 * fem,
-                            child: Icon(
-                              Icons.account_circle,
-                              size: 40 * fem,
-                              color:
-                                  Colors.white, // Customize the color if needed
+                            child: PopupMenuButton<int>(
+                              itemBuilder: (context) => [
+                                const PopupMenuItem(
+                                  value: 1,
+                                  child: ListTile(
+                                    leading: Icon(Icons.person),
+                                    title: Text('Profile'),
+                                  ),
+                                ),
+                                const PopupMenuItem(
+                                  value: 2,
+                                  child: ListTile(
+                                    leading: Icon(Icons.logout),
+                                    title: Text('Logout'),
+                                  ),
+                                ),
+                              ],
+                              onSelected: (value) {
+                                // Handle menu item selection
+                                switch (value) {
+                                  case 1:
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProfilePage()));
+                                    break;
+                                  case 2:
+                                    FirebaseAuth.instance.signOut();
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => loginPage()));
+                                    break;
+                                }
+                              },
+                              child: Icon(
+                                Icons.account_circle,
+                                size: 40 * fem,
+                                color: Colors
+                                    .white, // Customize the color if needed
+                              ),
                             ),
                           ),
                         ],
@@ -229,5 +270,88 @@ class _ProcessPageState extends State<ProcessPage> {
             unselectedFontSize: 14, // Set the font size for unselected labels
           ),
         ));
+  }
+
+  Future<void> getDownloadURL() async {
+    try {
+      // Get the current user from Firebase Authentication
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        //await Future.delayed(Duration(seconds: 3));
+        String userId = user.uid;
+        String fileName = "user_folders/$userId/temp/temp.wav";
+
+        // Get the download URL for the file
+        String downloadURL = await firebase_storage.FirebaseStorage.instance
+            .ref(fileName)
+            .getDownloadURL();
+        print("Download URL sent to API: $downloadURL");
+        // Call _sendDownloadURLToAPI with the obtained downloadURL
+        _sendDownloadURLToAPI(downloadURL);
+      } else {
+        print('User is not logged in.');
+      }
+    } catch (e) {
+      print('Error fetching download URL: $e');
+    }
+  }
+
+  Future<void> _sendDownloadURLToAPI(String downloadURL) async {
+    String apiUrl =
+        'https://pangkhongjun723-335f972d-1f6b-437e-8538-933acb3314fb.socketxp.com/predict'; // Change this to your actual API URL
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        body: {'firebase_url': downloadURL},
+      );
+
+      print("Download URL sent to API: $downloadURL");
+
+      if (response.statusCode == 200) {
+        print("API Response: ${response.body}");
+
+        final data = jsonDecode(response.body);
+
+        if (data.containsKey('final_emotion') &&
+            data.containsKey('percentage') &&
+            data.containsKey('predicted_emotions')) {
+          String finalEmotion = data['final_emotion'];
+          double percentage = data['percentage'];
+          List<dynamic> predictedEmotions = data['predicted_emotions'];
+
+          setState(() {
+            finalEmotion = finalEmotion;
+            currentPercentage = percentage;
+            emotionList = List<String>.from(predictedEmotions);
+          });
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ResultPage(
+                finalEmotion: finalEmotion,
+                percentage: percentage,
+                predictedEmotions: emotionList,
+              ),
+            ),
+          );
+        } else {
+          print('API Response does not contain expected data.');
+          // Navigate back to the record page
+          Navigator.pop(context);
+        }
+      } else {
+        print(
+            'Failed to send download URL to API. Status Code: ${response.statusCode}');
+        // Navigate back to the record page
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print('Error sending download URL to API: $e');
+      // Navigate back to the record page
+      Navigator.pop(context);
+    }
   }
 }

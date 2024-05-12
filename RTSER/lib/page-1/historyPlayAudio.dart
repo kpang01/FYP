@@ -9,32 +9,29 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:rtser/page-1/main-page.dart';
 
-import 'history.dart';
 import 'login-page.dart';
 import 'profile.dart';
+import 'record.dart';
 
-class PlayAudio extends StatefulWidget {
-  final String? finalEmotion;
-  final double percentage;
-  final List<String>? predictedEmotions;
-
-  const PlayAudio(
-      {Key? key,
-      required this.finalEmotion,
-      required this.percentage,
-      required this.predictedEmotions})
-      : super(key: key);
+class historyPlayAudio extends StatefulWidget {
+  final String fileName;
+  final List<String> predictedEmotions;
+  const historyPlayAudio({
+    Key? key,
+    required this.fileName,
+    required this.predictedEmotions,
+  }) : super(key: key);
   @override
-  State<PlayAudio> createState() => _PlayAudioState();
+  State<historyPlayAudio> createState() => _PlayAudioState();
 }
 
-class _PlayAudioState extends State<PlayAudio> {
+class _PlayAudioState extends State<historyPlayAudio> {
   late File file;
   late PlayerController controller;
   late StreamSubscription<PlayerState> playerStateSubscription;
   double? width;
   late Directory appDirectory;
-  int _currentIndex = 1;
+  int _currentIndex = 2;
   late Timer emotionTimer = Timer(Duration.zero, () {});
   int emotionIndex = 0;
   bool isEmotionTimerRunning = false;
@@ -48,6 +45,7 @@ class _PlayAudioState extends State<PlayAudio> {
   @override
   void initState() {
     super.initState();
+
     controller = PlayerController();
     _preparePlayer();
     playerStateSubscription = controller.onPlayerStateChanged.listen((_) {
@@ -65,7 +63,7 @@ class _PlayAudioState extends State<PlayAudio> {
     if (!isEmotionTimerRunning) {
       emotionTimer = Timer.periodic(Duration(seconds: 7), (timer) {
         setState(() {
-          emotionIndex = (emotionIndex + 1) % widget.predictedEmotions!.length;
+          emotionIndex = (emotionIndex + 1) % widget.predictedEmotions.length;
         });
       });
       isEmotionTimerRunning = true;
@@ -92,7 +90,7 @@ class _PlayAudioState extends State<PlayAudio> {
     // Use Firebase Storage to get the audio file
     firebase_storage.Reference storageRef = firebase_storage
         .FirebaseStorage.instance
-        .ref('user_folders/$userId/temp/temp.wav');
+        .ref('user_folders/$userId/audio/${widget.fileName}.wav');
 
     try {
       // Get the download URL for the file
@@ -126,11 +124,13 @@ class _PlayAudioState extends State<PlayAudio> {
   @override
   void dispose() {
     playerStateSubscription.cancel();
-    controller.dispose();
     // Cancel the timer when disposing the widget
     emotionTimer.cancel();
-    super.dispose();
+    controller.stopAllPlayers();
     controller.stopPlayer();
+    super.dispose();
+    controller.pausePlayer();
+    controller.dispose();
   }
 
   @override
@@ -180,12 +180,12 @@ class _PlayAudioState extends State<PlayAudio> {
                           ),
                           Container(
                             margin: EdgeInsets.fromLTRB(
-                                0 * fem, 0 * fem, 95 * fem, 1 * fem),
+                                0 * fem, 0 * fem, 107 * fem, 1 * fem),
                             child: RichText(
                               text: TextSpan(
                                 text: 'SER',
                                 style: TextStyle(
-                                  fontSize: 24 * ffem,
+                                  fontSize: 20 * ffem,
                                   fontWeight: FontWeight.w800,
                                   color: Colors.blueAccent,
                                 ),
@@ -222,8 +222,8 @@ class _PlayAudioState extends State<PlayAudio> {
                                                 ProfilePage()));
                                     break;
                                   case 2:
-                                    FirebaseAuth.instance.signOut();
                                     controller.stopPlayer();
+                                    FirebaseAuth.instance.signOut();
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -399,7 +399,7 @@ class _PlayAudioState extends State<PlayAudio> {
                           ),
                           RichText(
                             text: TextSpan(
-                              text: widget.predictedEmotions![
+                              text: widget.predictedEmotions[
                                   emotionIndex], // Placeholder for date
 
                               style: TextStyle(
@@ -416,7 +416,7 @@ class _PlayAudioState extends State<PlayAudio> {
                             height: 42 * fem,
                             child: Text(
                               getEmojiForEmotion(
-                                  widget.predictedEmotions![emotionIndex]),
+                                  widget.predictedEmotions[emotionIndex]),
                               style: TextStyle(
                                 fontSize: 30,
                               ),
@@ -450,11 +450,11 @@ class _PlayAudioState extends State<PlayAudio> {
                       MaterialPageRoute(builder: (context) => mainPage()));
                   break;
                 case 1:
-                  break;
-                case 2:
                   controller.stopPlayer();
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HistoryPage()));
+                      MaterialPageRoute(builder: (context) => Record()));
+                  break;
+                case 2:
                   break;
                 case 3:
                   controller.stopPlayer();

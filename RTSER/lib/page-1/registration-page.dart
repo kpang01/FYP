@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:rtser/utils.dart';
 
@@ -561,6 +564,28 @@ class _registrationPageState extends State<registrationPage>
     );
   }
 
+  Future<void> createStorageFolder(String userId) async {
+    try {
+      // Get a reference to the storage bucket
+      final Reference storageRef = FirebaseStorage.instance.ref();
+
+      // Create a folder with the user's ID as the folder name
+      final Reference userFolderRef = storageRef.child('user_folders/$userId/');
+
+      // Create 'temp' folder inside user folder
+      final Reference tempFolderRef = userFolderRef.child('temp/');
+      await tempFolderRef.putData(Uint8List(0)); // Create temp folder
+
+      // Create 'audio' folder inside user folder
+      final Reference audioFolderRef = userFolderRef.child('audio/');
+      await audioFolderRef.putData(Uint8List(0)); // Create audio folder
+
+      print('Folders created successfully: $userId');
+    } catch (e) {
+      print('Error creating folders: $e');
+    }
+  }
+
   void createUser() async {
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -599,15 +624,32 @@ class _registrationPageState extends State<registrationPage>
                     password: _passwordController.text,
                   );
 
-                  // Store additional user data in Firebase Realtime Database
-                  storeUserData(userCredential.user!.uid);
+                  if (userCredential.user != null) {
+                    // Store additional user data in Firebase Realtime Database
+                    storeUserData(userCredential.user!.uid);
+                    createStorageFolder(userCredential.user!.uid);
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Registration Success")),
-                  );
+                    // Check if email verification is enabled
+                    if (!userCredential.user!.emailVerified) {
+                      // Send email verification
+                      await userCredential.user!.sendEmailVerification();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text("Verification email sent")),
+                      );
+                    }
 
-                  // Navigate back to login page
-                  Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Registration Success")),
+                    );
+
+                    // Navigate back to login page
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Registration Failed")),
+                    );
+                  }
                 } on FirebaseAuthException catch (e) {
                   if (e.code == 'weak-password') {
                     print('The password provided is too weak.');
