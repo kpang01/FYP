@@ -295,67 +295,65 @@ class _PlayAudioState extends State<historyPlayAudio> {
                     SizedBox(
                       height: 40,
                     ),
-                    Positioned(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 80 * fem,
-                        decoration: BoxDecoration(
-                          color: Color.fromRGBO(6, 24, 72, 1),
-                          borderRadius: BorderRadius.circular(1.0),
-                        ),
-                        child: Stack(
-                          children: [
-                            //SizedBox(width: 8 * fem),
-                            Positioned(
-                              top: 10 * fem,
-                              left: 40 * fem,
-                              child: IconButton(
-                                onPressed: () async {
-                                  controller.playerState.isPlaying
-                                      ? await controller.pausePlayer()
-                                      : await controller.startPlayer(
-                                          finishMode: FinishMode.loop,
-                                        );
-                                },
-                                icon: Icon(
-                                  controller.playerState.isPlaying
-                                      ? Icons.stop
-                                      : Icons.play_arrow,
-                                  color: Colors.white,
-                                  size: 60.0,
-                                ),
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                              ),
-                            ),
-                            Positioned(
-                              left: 160 * fem,
-                              top: 10 * fem,
-                              child: Container(
-                                width: 5.0,
-                                height: 60 * fem,
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 80 * fem,
+                      decoration: BoxDecoration(
+                        color: Color.fromRGBO(6, 24, 72, 1),
+                        borderRadius: BorderRadius.circular(1.0),
+                      ),
+                      child: Stack(
+                        children: [
+                          //SizedBox(width: 8 * fem),
+                          Positioned(
+                            top: 10 * fem,
+                            left: 40 * fem,
+                            child: IconButton(
+                              onPressed: () async {
+                                controller.playerState.isPlaying
+                                    ? await controller.pausePlayer()
+                                    : await controller.startPlayer(
+                                        finishMode: FinishMode.loop,
+                                      );
+                              },
+                              icon: Icon(
+                                controller.playerState.isPlaying
+                                    ? Icons.stop
+                                    : Icons.play_arrow,
                                 color: Colors.white,
+                                size: 60.0,
                               ),
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
                             ),
-                            Positioned(
-                              right: 65 * fem,
-                              top: 13 * fem,
-                              child: IconButton(
-                                onPressed: () {
-                                  // Add your cancel button functionality here
-                                  Navigator.of(context).pop();
-                                },
-                                icon: Icon(
-                                  Icons.cancel,
-                                  color: Colors.white,
-                                  size: 50.0,
-                                ),
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
+                          ),
+                          Positioned(
+                            left: 160 * fem,
+                            top: 10 * fem,
+                            child: Container(
+                              width: 5.0,
+                              height: 60 * fem,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Positioned(
+                            right: 65 * fem,
+                            top: 13 * fem,
+                            child: IconButton(
+                              onPressed: () {
+                                // Add your cancel button functionality here
+                                Navigator.of(context).pop();
+                              },
+                              icon: Icon(
+                                Icons.cancel,
+                                color: Colors.white,
+                                size: 50.0,
                               ),
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                     SizedBox(

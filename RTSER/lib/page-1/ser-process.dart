@@ -278,7 +278,7 @@ class _ProcessPageState extends State<ProcessPage> {
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
-        //await Future.delayed(Duration(seconds: 3));
+        await Future.delayed(Duration(seconds: 10));
         String userId = user.uid;
         String fileName = "user_folders/$userId/temp/temp.wav";
 

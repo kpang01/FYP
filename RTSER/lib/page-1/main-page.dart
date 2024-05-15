@@ -2,7 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:rtser/page-1/category.dart';
 
 import 'Description.dart';
@@ -479,29 +478,17 @@ class _mainPageState extends State<mainPage> {
                               ),
                               Container(
                                 margin: EdgeInsets.fromLTRB(
-                                    20 * fem, 0 * fem, 30 * fem, 1 * fem),
-                                child: CircularPercentIndicator(
-                                  radius: 25.0,
-                                  lineWidth: 5.0,
-                                  animation: true,
-                                  percent: latestRecord!.isNotEmpty &&
-                                          latestRecord![0]['percentage'] != null
-                                      ? double.tryParse(latestRecord![0]
-                                                  ['percentage']) !=
-                                              null
-                                          ? (double.parse(latestRecord![0]
-                                                  ['percentage']) /
-                                              100.0)
-                                          : 0.0
-                                      : 0.0,
-                                  center: Text(
-                                    '${latestRecord![0]['percentage'] ?? 0}%', // Default value is 0 if null
+                                    20 * fem, 0 * fem, 10 * fem, 1 * fem),
+                                child: RichText(
+                                  text: TextSpan(
+                                    text: 'Score: ' +
+                                        '${latestRecord![0]['mark'] ?? 0}',
                                     style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 10.0),
+                                      fontSize: 14 * ffem,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xb2000000),
+                                    ),
                                   ),
-                                  circularStrokeCap: CircularStrokeCap.round,
-                                  progressColor: Colors.blueAccent,
                                 ),
                               ),
                               GestureDetector(
@@ -754,29 +741,11 @@ class _mainPageState extends State<mainPage> {
 
   String getEmojiForEmotion(String emotion) {
     switch (emotion.toLowerCase()) {
-      case 'sad':
-        return '😢';
+      case 'negative':
+        return '😞';
 
-      case 'angry':
-        return '😡';
-
-      case 'calm':
-        return '😌';
-
-      case 'happy':
+      case 'positive':
         return '😊';
-
-      case 'disgust':
-        return '🤢';
-
-      case 'fear':
-        return '😨';
-
-      case 'neutral':
-        return '😐';
-
-      case 'surprise':
-        return '😮';
 
       default:
         return '';

@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:rtser/page-1/main-page.dart';
 
 import 'historyPlayAudio.dart';
@@ -384,21 +383,17 @@ class _HistoryPageState extends State<HistoryPage> {
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.only(right: 20 * fem),
-                          child: CircularPercentIndicator(
-                            radius: 25.0,
-                            lineWidth: 5.0,
-                            animation: true,
-                            percent: double.parse(item['percentage']) / 100.0,
-                            center: Text(
-                              '${item['percentage']}%',
+                          margin: EdgeInsets.fromLTRB(
+                              20 * fem, 0 * fem, 30 * fem, 1 * fem),
+                          child: RichText(
+                            text: TextSpan(
+                              text: 'Score: ' + item['mark'],
                               style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10.0,
+                                fontSize: 14 * ffem,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xb2000000),
                               ),
                             ),
-                            circularStrokeCap: CircularStrokeCap.round,
-                            progressColor: Colors.blueAccent,
                           ),
                         ),
                         Padding(
@@ -532,29 +527,11 @@ class _HistoryPageState extends State<HistoryPage> {
 
   String getEmojiForEmotion(String emotion) {
     switch (emotion.toLowerCase()) {
-      case 'sad':
-        return '😢';
+      case 'negative':
+        return '😞';
 
-      case 'angry':
-        return '😡';
-
-      case 'calm':
-        return '😌';
-
-      case 'happy':
+      case 'positive':
         return '😊';
-
-      case 'disgust':
-        return '🤢';
-
-      case 'fear':
-        return '😨';
-
-      case 'neutral':
-        return '😐';
-
-      case 'surprise':
-        return '😮';
 
       default:
         return '';

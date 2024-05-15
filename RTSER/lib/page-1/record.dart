@@ -53,7 +53,6 @@ class _RecordState extends State<Record> {
     super.initState();
 
     _getDir();
-
     _initialiseControllers();
   }
 
@@ -72,7 +71,8 @@ class _RecordState extends State<Record> {
       ..androidEncoder = AndroidEncoder.aac
       ..androidOutputFormat = AndroidOutputFormat.mpeg4
       ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
-      ..sampleRate = 44100;
+      ..sampleRate = 44100
+      ..bitRate = 256000;
 
     recordingDuration = Duration(seconds: 0);
   }
@@ -437,65 +437,56 @@ class _RecordState extends State<Record> {
 
     // Execute the FFmpeg command to convert the file
     await flutterFFmpeg.execute(
-      "-i $inputPath -acodec pcm_s16le -ac 1 -ar 44100 -b:a 1411k $outputPath",
-    );
-
+        "-i $inputPath -af 'highpass=f=300, lowpass=f=3000, dynaudnorm, acompressor' -ar 44100 -ac 2 -b:a 256k $outputPath");
     // Return the path of the converted WAV file
     return outputPath;
   }
 
   Future<void> _uploadAudioToFirebase(String filePath) async {
     try {
+      // Convert the file to WAV format
       final wavFilePath = await convertToWav(filePath);
       File audioFile = File(wavFilePath);
-      //File audioFile = File(filePath);
 
       final currentUser = FirebaseAuth.instance.currentUser;
 
       if (currentUser == null) {
         print("User not logged in.");
-
         return;
       }
 
       String userId = currentUser.uid;
-
       String fileName = "user_folders/$userId/temp/temp.wav";
 
       firebase_storage.Reference storageReference =
           firebase_storage.FirebaseStorage.instance.ref().child(fileName);
 
       // Set the content type to audio/wav
-
       firebase_storage.SettableMetadata metadata =
           firebase_storage.SettableMetadata(
         contentType: 'audio/wav',
       );
 
       // Upload audio file to Firebase Storage with content type set
-
       await storageReference.putFile(
         audioFile,
         metadata,
       );
 
       // Get the download URL after upload is complete
-
       String downloadURL = await storageReference.getDownloadURL();
+      audioFile.delete(); // Delete the WAV file from app directory
 
       // Now, you can save downloadURL to Firebase Database or perform any other actions.
-
       print("Audio file uploaded. Download URL: $downloadURL");
-      // Call the function to send audio to API with the download URL
-      audioFile.delete();
+
+      // Delete all audio files from app directory
     } catch (e) {
       print("Error uploading audio file: $e");
 
       if (e is firebase_storage.FirebaseException) {
         print("Firebase Storage Error Code: ${e.code}");
-
         print("Firebase Storage Error Message: ${e.message}");
-
         print("Firebase Storage Inner Exception: ${e.stackTrace}");
       }
     }

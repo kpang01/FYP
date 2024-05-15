@@ -38,285 +38,424 @@ class _ResultPageState extends State<ResultPage> {
 
   @override
   Widget build(BuildContext context) {
+    EmotionCategory emotionCategory = EmotionCategory();
     double baseWidth = 360;
     double fem = MediaQuery.of(context).size.width / baseWidth;
     double ffem = fem * 0.97;
+
+    // Categorize emotions
+    EmotionResult emotionResult =
+        emotionCategory.categorizeEmotion(widget.predictedEmotions!);
     return Scaffold(
         backgroundColor: Color(0xff06030b),
-        body: Padding(
-            padding:
-                EdgeInsets.fromLTRB(17 * fem, 41 * fem, 14 * fem, 35 * fem),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    // autogroup5kkdf4Z (NshhNjP6YiCrzWkPGk5kKd)
+        body: SingleChildScrollView(
+            child: Padding(
+                padding:
+                    EdgeInsets.fromLTRB(17 * fem, 41 * fem, 14 * fem, 35 * fem),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        // autogroup5kkdf4Z (NshhNjP6YiCrzWkPGk5kKd)
 
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          // autogroup3yw9n9B (NshgzfBYM7Axm7FRdZ3yw9)
-                          margin: EdgeInsets.fromLTRB(
-                              0 * fem, 0 * fem, 0 * fem, 3 * fem),
-                          width: double.infinity,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context)
-                                      .pop(); // This will navigate back
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem,
-                                      121.12 * fem, 0.68 * fem),
-                                  width: 21.88 * fem,
-                                  height: 21.32 * fem,
-                                  child: Icon(
-                                    Icons.arrow_back,
-                                    size: 21.88 * fem,
-                                    color: Colors.blueAccent,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 70 * fem, 1 * fem),
-                                child: RichText(
-                                  text: TextSpan(
-                                    text: 'Result',
-                                    style: TextStyle(
-                                      fontSize: 24 * ffem,
-                                      fontWeight: FontWeight.w800,
-                                      color: Colors.blueAccent,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                child: PopupMenuButton<int>(
-                                  itemBuilder: (context) => [
-                                    const PopupMenuItem(
-                                      value: 1,
-                                      child: ListTile(
-                                        leading: Icon(Icons.person),
-                                        title: Text('Profile'),
-                                      ),
-                                    ),
-                                    const PopupMenuItem(
-                                      value: 2,
-                                      child: ListTile(
-                                        leading: Icon(Icons.logout),
-                                        title: Text('Logout'),
-                                      ),
-                                    ),
-                                  ],
-                                  onSelected: (value) {
-                                    // Handle menu item selection
-                                    switch (value) {
-                                      case 1:
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ProfilePage()));
-                                        break;
-                                      case 2:
-                                        FirebaseAuth.instance.signOut();
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    loginPage()));
-                                        break;
-                                    }
-                                  },
-                                  child: Icon(
-                                    Icons.account_circle,
-                                    size: 40 * fem,
-                                    color: Colors
-                                        .white, // Customize the color if needed
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          // emotionrecognizedhru (1:1618)
-                          margin: EdgeInsets.fromLTRB(
-                              0 * fem, 45 * fem, 2 * fem, 20 * fem),
-                          constraints: BoxConstraints(
-                            maxWidth: 198 * fem,
-                          ),
-                          child: RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
-                              text: 'Emotion \nRecognized!',
-                              style: TextStyle(
-                                fontSize: 30 * ffem,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          // surprisebxH (1:1620)
-                          margin: EdgeInsets.fromLTRB(
-                              0 * fem, 0 * fem, 0 * fem, 20 * fem),
-                          width: 200 * fem,
-                          height: 200 * fem,
-                          child: Center(
-                            child: Text(
-                              getEmojiForEmotion(widget
-                                  .finalEmotion!), // Surprise emoji character
-                              style: TextStyle(
-                                fontSize:
-                                    130 * fem, // Adjust the font size as needed
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          // group798hK (1:1621)
-                          margin: EdgeInsets.fromLTRB(
-                              101 * fem, 0 * fem, 101 * fem, 76 * fem),
-                          width: double.infinity,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                // surprisefSM (1:1622)
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 0 * fem, 7 * fem),
-                                child: RichText(
-                                  textAlign: TextAlign.center,
-                                  text: TextSpan(
-                                    text: widget.finalEmotion.toString(),
-                                    style: TextStyle(
-                                      fontSize: 25 * ffem,
-                                      fontWeight: FontWeight.w800,
-                                      color: Color(0xff30e8ff),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  text: widget.percentage.toStringAsFixed(2) +
-                                      "%",
-                                  style: TextStyle(
-                                    fontSize: 22 * ffem,
-                                    fontWeight: FontWeight.w800,
-                                    color: Color(0xff30e8ff),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          // group627p9 (1:1624)
-                          margin: EdgeInsets.fromLTRB(
-                              10 * fem, 0 * fem, 0 * fem, 0 * fem),
-                          width: double.infinity,
-                          height: 50 * fem,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10 * fem),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.fromLTRB(
-                                    15 * fem, 0 * fem, 40 * fem, 0 * fem),
-                                width: 120 * fem,
-                                height: 50 * fem,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    // Add your process button functionality here
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => SaveFileDialog(
-                                        onSave: saveAudioFile,
-                                        fileName: fileName,
-                                      ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors
-                                        .blue, // Adjust the color as needed
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                  child: GestureDetector(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              // autogroup3yw9n9B (NshgzfBYM7Axm7FRdZ3yw9)
+                              margin: EdgeInsets.fromLTRB(
+                                  0 * fem, 0 * fem, 0 * fem, 3 * fem),
+                              width: double.infinity,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
                                     onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => mainPage()),
-                                      );
+                                      Navigator.of(context)
+                                          .pop(); // This will navigate back
                                     },
-                                    child: Text(
-                                      'Save',
-                                      style: TextStyle(
-                                        fontSize: 16 * fem,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
+                                    child: Container(
+                                      margin: EdgeInsets.fromLTRB(0 * fem,
+                                          0 * fem, 121.12 * fem, 0.68 * fem),
+                                      width: 21.88 * fem,
+                                      height: 21.32 * fem,
+                                      child: Icon(
+                                        Icons.arrow_back,
+                                        size: 21.88 * fem,
+                                        color: Colors.blueAccent,
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.fromLTRB(
-                                    0 * fem, 0 * fem, 0 * fem, 0 * fem),
-                                width: 120 * fem,
-                                height: 50 * fem,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    // Add your process button functionality here
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => PlayAudio(
-                                          finalEmotion: widget.finalEmotion,
-                                          percentage: widget.percentage,
-                                          predictedEmotions:
-                                              widget.predictedEmotions,
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(
+                                        0 * fem, 0 * fem, 70 * fem, 1 * fem),
+                                    child: RichText(
+                                      text: TextSpan(
+                                        text: 'Result',
+                                        style: TextStyle(
+                                          fontSize: 24 * ffem,
+                                          fontWeight: FontWeight.w800,
+                                          color: Colors.blueAccent,
                                         ),
                                       ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors
-                                        .blue, // Adjust the color as needed
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
                                     ),
                                   ),
-                                  child: Text(
-                                    'AudioPlayer',
-                                    style: TextStyle(
-                                      fontSize: 14 * fem,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
+                                  Container(
+                                    child: PopupMenuButton<int>(
+                                      itemBuilder: (context) => [
+                                        const PopupMenuItem(
+                                          value: 1,
+                                          child: ListTile(
+                                            leading: Icon(Icons.person),
+                                            title: Text('Profile'),
+                                          ),
+                                        ),
+                                        const PopupMenuItem(
+                                          value: 2,
+                                          child: ListTile(
+                                            leading: Icon(Icons.logout),
+                                            title: Text('Logout'),
+                                          ),
+                                        ),
+                                      ],
+                                      onSelected: (value) {
+                                        // Handle menu item selection
+                                        switch (value) {
+                                          case 1:
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProfilePage()));
+                                            break;
+                                          case 2:
+                                            FirebaseAuth.instance.signOut();
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        loginPage()));
+                                            break;
+                                        }
+                                      },
+                                      child: Icon(
+                                        Icons.account_circle,
+                                        size: 40 * fem,
+                                        color: Colors
+                                            .white, // Customize the color if needed
+                                      ),
                                     ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              // emotionrecognizedhru (1:1618)
+                              margin: EdgeInsets.fromLTRB(
+                                  0 * fem, 20 * fem, 2 * fem, 0 * fem),
+                              constraints: BoxConstraints(
+                                maxWidth: 198 * fem,
+                              ),
+                              child: RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  text: 'Emotion \nRecognized!',
+                                  style: TextStyle(
+                                    fontSize: 25 * ffem,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                            Container(
+                              // surprisebxH (1:1620)
+                              margin: EdgeInsets.fromLTRB(
+                                  0 * fem, 0 * fem, 0 * fem, 0 * fem),
+                              width: 200 * fem,
+                              height: 180 * fem,
+                              child: Center(
+                                child: Text(
+                                  emotionResult
+                                      .emotionEmoji, // Surprise emoji character
+                                  style: TextStyle(
+                                    fontSize: 120 *
+                                        fem, // Adjust the font size as needed
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              // group798hK (1:1621)
+                              margin: EdgeInsets.fromLTRB(
+                                  0 * fem, 0 * fem, 0 * fem, 0 * fem),
+                              width: double.infinity,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    // surprisefSM (1:1622)
+                                    margin: EdgeInsets.fromLTRB(
+                                        0 * fem, 0 * fem, 0 * fem, 10 * fem),
+                                    child: RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        text: emotionResult.emotion,
+                                        style: TextStyle(
+                                          fontSize: 22 * ffem,
+                                          fontWeight: FontWeight.w800,
+                                          color: Color(0xff30e8ff),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      text: emotionResult.message,
+                                      style: TextStyle(
+                                        fontSize: 16 * ffem,
+                                        fontWeight: FontWeight.w800,
+                                        color: Color(0xff30e8ff),
+                                      ),
+                                    ),
+                                  ),
+                                  RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      text: 'Your score: ${emotionResult.mark}',
+                                      style: TextStyle(
+                                        fontSize: 18 * ffem,
+                                        fontWeight: FontWeight.w800,
+                                        color: Color(0xff30e8ff),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(
+                                  top: 0 * fem), // Add margin for spacing
+                              padding: EdgeInsets.symmetric(
+                                  vertical:
+                                      15 * fem), // Add padding for spacing
+
+                              child: SizedBox(
+                                height: 150 *
+                                    fem, // Set the height of the container
+                                child: SingleChildScrollView(
+                                  child: ListView.builder(
+                                    shrinkWrap:
+                                        true, // Add this to ensure ListView scrolls properly
+                                    physics:
+                                        NeverScrollableScrollPhysics(), // Disable scrolling of ListView
+                                    itemCount: widget.predictedEmotions!
+                                        .length, // Use widget.predictedEmotions
+                                    itemBuilder: (context, index) {
+                                      var item = widget.predictedEmotions![
+                                          index]; // Use widget.predictedEmotions
+                                      int durationInSeconds = index *
+                                          7; // Calculate duration based on index
+                                      String formattedDuration = formatDuration(
+                                          durationInSeconds); // Format duration
+
+                                      return Container(
+                                        margin:
+                                            EdgeInsets.only(bottom: 5 * fem),
+                                        padding: EdgeInsets.fromLTRB(
+                                          15 * fem,
+                                          0 * fem,
+                                          7 * fem,
+                                          0 * fem,
+                                        ),
+                                        height: 40 * fem,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffffffff),
+                                          borderRadius:
+                                              BorderRadius.circular(5 * fem),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Color(0x3f000000),
+                                              offset: Offset(2 * fem, 2 * fem),
+                                              blurRadius: 1 * fem,
+                                            ),
+                                          ],
+                                        ),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  right: 15 * fem),
+                                              width: 42 * fem,
+                                              height: 42 * fem,
+                                              child: Text(
+                                                getEmojiForEmotion(widget
+                                                    .predictedEmotions![index]),
+                                                style: TextStyle(fontSize: 32),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 10 * fem),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      text: "Emotion: " +
+                                                          widget
+                                                              .predictedEmotions![
+                                                                  index]
+                                                              .toUpperCase(),
+                                                      style: TextStyle(
+                                                        fontSize: 15 * ffem,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color:
+                                                            Color(0xb2000000),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                                margin: EdgeInsets.only(
+                                                    top: 10 * fem,
+                                                    left: 10 * fem),
+                                                child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      RichText(
+                                                        text: TextSpan(
+                                                          text:
+                                                              formattedDuration,
+                                                          style: TextStyle(
+                                                            fontSize: 15 * ffem,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: Color(
+                                                                0xb2000000),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ]))
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              // group627p9 (1:1624)
+                              margin: EdgeInsets.fromLTRB(
+                                  10 * fem, 0 * fem, 0 * fem, 0 * fem),
+                              width: double.infinity,
+                              height: 50 * fem,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10 * fem),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(
+                                        15 * fem, 0 * fem, 40 * fem, 0 * fem),
+                                    width: 120 * fem,
+                                    height: 50 * fem,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        // Add your process button functionality here
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => SaveFileDialog(
+                                            onSave: saveAudioFile,
+                                            fileName: fileName,
+                                          ),
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors
+                                            .blue, // Adjust the color as needed
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                      ),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    mainPage()),
+                                          );
+                                        },
+                                        child: Text(
+                                          'Save',
+                                          style: TextStyle(
+                                            fontSize: 16 * fem,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(
+                                        0 * fem, 0 * fem, 0 * fem, 0 * fem),
+                                    width: 120 * fem,
+                                    height: 50 * fem,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        // Add your process button functionality here
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => PlayAudio(
+                                              finalEmotion: widget.finalEmotion,
+                                              percentage: widget.percentage,
+                                              predictedEmotions:
+                                                  widget.predictedEmotions,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors
+                                            .blue, // Adjust the color as needed
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'AudioPlayer',
+                                        style: TextStyle(
+                                          fontSize: 12 * fem,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                ])),
+                      ),
+                    ]))),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
             border: Border(
@@ -449,7 +588,9 @@ class _ResultPageState extends State<ResultPage> {
         final FlutterFFprobe flutterFFprobe = FlutterFFprobe();
         final mediaInfo = await flutterFFprobe.getMediaInformation(downloadURL);
         final duration = mediaInfo.getMediaProperties()!['duration'];
-
+        EmotionCategory emotionCategory = EmotionCategory();
+        EmotionResult emotionResult =
+            emotionCategory.categorizeEmotion(widget.predictedEmotions!);
         // Save additional data to the Realtime Database
         final databaseReference = FirebaseDatabase.instance.reference();
         databaseReference
@@ -461,8 +602,8 @@ class _ResultPageState extends State<ResultPage> {
           'downloadURL': downloadURL,
           'fileName': fileName,
           'date': DateTime.now().toString(),
-          'emotion': widget.finalEmotion,
-          'percentage': widget.percentage.toStringAsFixed(2),
+          'emotion': emotionResult.emotion,
+          'mark': emotionResult.mark.toString(),
           'list_emotion': widget.predictedEmotions,
           'duration': duration.toString(), // Use the retrieved duration
           // Add more data as needed
@@ -475,6 +616,7 @@ class _ResultPageState extends State<ResultPage> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Audio file saved successfully.'),
         ));
+        Navigator.of(context).pop();
       } else {
         // Show error message if user is not authenticated
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -517,7 +659,6 @@ class SaveFileDialog extends StatelessWidget {
             // Check if file name is not empty
             if (fileName.isNotEmpty) {
               onSave(fileName);
-              Navigator.of(context).pop();
             } else {
               // Show error message if file name is empty
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -530,4 +671,61 @@ class SaveFileDialog extends StatelessWidget {
       ],
     );
   }
+}
+
+class EmotionCategory {
+  // Function to categorize emotions
+  EmotionResult categorizeEmotion(List<String> predictedEmotions) {
+    // Define scores for each emotion
+    Map<String, int> emotionScores = {
+      'angry': -3,
+      'disgust': -2,
+      'fear': -2,
+      'sad': -2,
+      'neutral': 1,
+      'happy': 1,
+      'calm': 1,
+      'surprise': 1,
+    };
+
+    // Initialize total score
+    int totalScore = 0;
+
+    // Calculate total score based on predicted emotions
+    for (String emotion in predictedEmotions) {
+      // Check if the emotion is in the emotionScores map
+      if (emotionScores.containsKey(emotion.toLowerCase())) {
+        // Add the score of the emotion to the total score
+        totalScore += emotionScores[emotion.toLowerCase()]!;
+      }
+    }
+    int mark = totalScore;
+    // Determine the category based on the total score
+    if (mark < 0) {
+      return EmotionResult(
+          emotion: 'NEGATIVE',
+          message: 'You seem to be having negative feelings.',
+          mark: mark,
+          emotionEmoji: '😞');
+    } else {
+      return EmotionResult(
+          emotion: 'POSITIVE',
+          message: 'You\'re feeling positively about something!',
+          mark: mark,
+          emotionEmoji: '😊');
+    }
+  }
+}
+
+class EmotionResult {
+  final String message;
+  final int mark;
+  final String emotion;
+  final String emotionEmoji;
+
+  EmotionResult(
+      {required this.message,
+      required this.mark,
+      required this.emotion,
+      required this.emotionEmoji});
 }
