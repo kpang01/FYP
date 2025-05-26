@@ -1,9 +1,13 @@
 ![Main.png](Images/Main.png)
-![Architecture.png](Images/Architecture.png)
+
 
 ## About the RTSER (Real-Time Speech Emotion Recognition) Application
 
 The RTSER project is a Flutter-based mobile application designed for real-time speech emotion recognition. It allows users to record their voice or upload an audio file, which is then processed to identify the emotional content of the speech.
+
+## Architecture
+![Architecture.png](Images/Architecture.png)
+
 
 ### Core Functionality:
 
